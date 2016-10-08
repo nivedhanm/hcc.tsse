@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html>
+<style>
+.body {
+    font-family: Verdana,sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+}
+.header {
+    background-color: rgb(50, 153, 187);
+	border-bottom-color: gray;
+	border-bottom-width: 1px;
+	width:100%;
+	height: 75px;
+	position:fixed;
+	text-align: right;
+	padding: 0px 30px;
+	z-index: 2;
+}
+
+ul {
+  list-style-type: none;
+}
+.sort-and-search-container{
+	display: inline-block;
+	background: w3-white;
+	padding: 15px;
+	padding-top: 75px;
+	padding-right: 275px;
+	margin: 15px;
+	margin-left: 200px;
+	width: 100%;
+	min-width: 980px;
+	float:left;
+}
+.sort-and-search-container div{
+	display: inline-block;
+}
+.sort-container{
+	float:left;
+	margin-right: 30px;
+}
+.search-bar-container{
+	float:right;
+}
+.sort-and-search-container input{
+	float: center;
+}
+.sort-and-search-container button{
+	float:right;
+}
+.main{
+	background: white;
+	min-width: 500px;
+	text-align: center;
+}
+.search-results-container{
+	overflow: hidden;
+}
+.filter-menu{
+    list-style-type: none;
+	padding-top: 15px;
+	margin-top: 75px;
+    width: 200px;
+    background-color: #f1f1f1;
+    position: fixed;
+    height: 100%;
+    overflow: auto;
+	text-align: left;
+	float:left;
+}
+.products-container{
+	margin-left: 200px;
+	padding: 15px 1%;
+	background:white;
+	float: left;
+}
+.product-panel{
+	display: inline-block;
+    background-color: #f1f1f1;
+	margin: 15px;
+	min-width: 430px;
+	text-align: center;
+}
+    .circular-menu {
+        width: 250px;
+        height: 250px;
+        z-index: 1;
+        margin: 0 auto;
+        position: absolute;
+        top: 25px;
+        left: 50%;
+        margin-left:-125px;
+    }
+
+    .circle {
+        width: 250px;
+        height: 250px;
+        opacity: 0;
+        
+        -webkit-transform: scale(0);
+        -moz-transform: scale(0);
+        transform: scale(0);
+
+        -webkit-transition: all 0.4s ease-out;
+        -moz-transition: all 0.4s ease-out;
+        transition: all 0.4s ease-out;
+    }
+
+    .open.circle {
+        opacity: 1;
+
+        -webkit-transform: scale(1);
+        -moz-transform: scale(1);
+        transform: scale(1);
+    }
+
+    .circle i {
+        text-decoration: none;
+        color: #444;
+        border-radius: 50%;
+        background: #dde;
+        display: block;
+        height: 60px;
+        width: 60px;
+        line-height: 40px;
+        padding: 10px;
+        margin-left: -30px;
+        margin-top: -30px;
+        position: absolute;
+        text-align: center;
+
+    }
+
+    .circle i:hover {
+        color: #eef;
+    }
+
+.product-name{
+	
+}
+.star-and-price div {
+	display:inline-block
+}
+.product-panel img{
+	max-width: 370px;
+}
+img {
+	max-width: 370px;
+}
+ul.tab {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+ul.tab li {
+	float: left;
+}
+
+ul.tab li a {
+    display: inline-block;
+    color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+ul.tab li a:hover {
+	background-color: #ddd;
+}
+
+ul.tab li a:focus, .active {
+	background-color: #ccc;
+}
+.w3-col.one-col{width: 98%;}
+
+@media only screen and (min-width:1042px){
+.w3-col.two-col{width: 45%}
+}
+@media only screen and (min-width:1425px){
+.w3-col.three-col{width: 30%;}
+}
+</style>
+<head>
+  <title>HCC TSSE Mockup</title>
+  <meta charset="utf-8">
+  <meta name="viewport" >
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css"></link>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body id="body">
+    <nav id="side-menu" class="w3-sidenav w3-light-grey" style="width:200px;margin-top:75px;display:inline">
+        <div class="w3-margin">Filters</div>
+        <div class="w3-accordion">
+            <a onclick="myAccFunc('price')" href="#">Price<i class="fa fa-caret-down"></i></a>
+            <div id="price" class="w3-accordion-content w3-white w3-medium">
+                <ul style="style:none;padding-bottom:15px;">
+                    <li>
+                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">$0:01-$24.99
+                    </li>
+                    <li>
+                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">$25.00-$49.99
+                    </li>
+                    <li>
+                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">$50.00-$99.99
+                    </li>
+                    <li>
+                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">$100.00+
+                    </li>
+                    <li>
+                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">
+                        From:
+                        <input class="w3-input w3-border" style="margin-left:20px;width:100px" type="text">
+                        <div style="margin-left:20px">To:</div>
+                        <input class="w3-input w3-border" style="margin-left:20px;width:100px" type="text">
+                    </li>
+                </ul>
+            </div>
+            <a onclick="myAccFunc('rating')" href="#">Rating<i class="fa fa-caret-down"></i></a>
+            <div id="rating" class="w3-accordion-content w3-white w3-medium">     
+                <ul style="style:none;padding-bottom:15px;">
+                    <li>
+                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">
+                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
+                    </li>
+                    <li>
+                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">
+                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
+                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
+                    </li>
+                    <li>
+                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">
+                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
+                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
+                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
+                    </li>
+                    <li>
+                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">
+                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
+                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
+                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
+                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
+                    </li>
+                    <li>
+                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">
+                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
+                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
+                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
+                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
+                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
+                    </li>
+                </ul>
+            </div>
+            <a onclick="myAccFunc('brand')" href="#">Brand<i class="fa fa-caret-down"></i></a>
+            <div id="brand" class="w3-accordion-content w3-white w3-medium">
+                <ul style="style:none;padding-bottom:15px;">
+                    <li>
+                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">Axess
+                    </li>
+                    <li>
+                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">Bose
+                    </li>
+                </ul>
+            </div>
+            <a onclick="myAccFunc('specifications')" href="#">Specifications<i class="fa fa-caret-down"></i></a>
+            <div id="specifications" class="w3-accordion-content w3-white w3-medium">
+                <ul style="style:none;padding-bottom:15px;">
+                    <li>
+                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">Wireless
+                    </li>
+                    <li>
+                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">Rechargeable
+                    </li>
+                    <li>
+                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">Portable
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+	<div id="header" class="header" style="color:white">
+		<i class="fa fa-user w3-xxxlarge w3-padding"></i>
+        <div class="w3-container w3-padding" style="text-align:right;float:right;">
+            <div style="w3-xlarge">Welcome, User!</div>
+            <i class="fa fa-cog w3-large"></i> Settings | Sign Out
+        </div>
+	</div>
+	<div id = "main" class="main">
+		<div id = "search-results-container" class="search-results-container">
+			<div id="sort-and-search-container" class="sort-and-search-container">
+					<select id="sort-dropdown" class="w3-select" style="width:300px;float:left;background-color:rgb(50, 153, 187);color:white" name="Sort">
+						<option>Price: Low To High</option>
+					</select>
+					<button class="w3-btn" id="search-button" 
+                        style="float:right;height:40px;width:75px;text-align:center;background-color:rgb(50, 153, 187)"><i class="fa fa-search w3-xlarge" style="background-color:rgb(50, 153, 187)"></i></button>
+					<input class="w3-input w3-border" id="search-bar" type="text" 
+                        style="width:300px;height:40px;float:right;border-color:rgb(50, 153, 187)"></input>
+			</div>
+			<div id="products-container" oncontextmenu="return false;" class="w3-row" style="width:100%-210px;margin-left:200px; padding-right:65px;">
+				
+			</div>
+		</div>
+		<div id="id01" class="w3-modal w3-padding">
+			<div class="w3-modal-content w3-card-4 w3-animate-zoom">
+				<header class="w3-white w3-padding">
+                    <div class="w3-padding" style="float:center">
+                        <span onclick="document.getElementById('id01').style.display='none'"
+                            class="w3-closebtn w3-padding-top">&times;</span>
+                        <h2 class="w3-half" style="text:left">
+                            <img src="https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg"/>
+                        </h2>
+                        <div class:"w3-half" style="float:left;text-align:left">
+                            <h2>Axess SPBT1031-RD</h2>
+                            <div>
+                                <div style="float:left">
+                                    <h4>$29.99</h4>
+                                    <div class="w3-xlarge" style="float:left;color:rgb(255, 153, 0)">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star-o"></i>
+                                        <i class="fa fa-star-o"></i>
+                                    </div>
+                                </div>
+                                <i class="fa fa-heart-o w3-jumbo" style="float:right;color:red;"></i>
+                            </div>
+                        </div>
+                    </div>
+				</header>
+
+				<ul class="w3-row w3-pagination w3-white w3-border-bottom w3-large" style="width:100%;">
+					<li>
+                        <a href="#" class="w3-quarter tablink" onclick="openCity(event, 'Specs')">
+                        <i class="fa fa-list-ul"></i> Tech Specs</a>
+                    </li>
+					<li>
+                        <a href="#" class="w3-quarter tablink" onclick="openCity(event, 'Reviews')">
+                        <i class="fa fa-star"></i> Reviews</a>
+                     </li>
+					<li>
+                        <a href="#" class="w3-quarter tablink" onclick="openCity(event, 'Videos')">
+                        <i class="fa fa-film"></i> Videos</a>
+                    </li>
+					<li>
+                        <a href="#" class="w3-quarter tablink" onclick="openCity(event, 'Favorites')">
+                        <i class="fa fa-heart"></i> Favorites</a>
+                    </li>
+				</ul>
+
+				<div id="Specs" class="w3-container city">
+					<div class="w3-container" style="text-align:left;max-height:350px;overflow:auto">
+						<table class="w3-table w3-margin">
+							<tr>
+								<td>Product Dimensions</td>
+								<td>11.4 x 6.2 x 6.6 inches</td>
+							</tr>
+							<tr>
+								<td>Item Weight</td>
+								<td>3.5 pounds</td>
+							</tr>
+							<tr>
+								<td>Manufacturer</td>
+								<td>AXESS</td>
+							</tr>
+							<tr>
+								<td>Batteries</td>
+								<td>1 Lithium ion batteries required. (included)</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div id="Reviews" class="w3-container city">
+					<div class="w3-container" style="text-align:left;max-height:350px;overflow:auto">
+                        <div class="w3-large" style="float:left;margin-right:15px;color:rgb(255, 153, 0)">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star-o"></i>
+                            <i class="fa fa-star-o"></i>
+                        </div>
+						<p><b>Better options available for less money</b></p>
+						<p>Disappointing, for several reasons:</p>
+						<p>1. Vocals are kind of muddy; sounds like the speaker is playing from inside of a cardboard box (as if the speaker was put in a box & then put on play...weird-sounding like that, like it's a bit boxed in).</p>
+						<p>2. Nearly zero bass. I'm really surprised at how little bass there is; I've built Sonosubs before (subwoofers in tubes) & would have thought it would have had at least SOME bass or mid-bass in this. Nope. Stuff that's a bit more acoustic like George Ezra's "Budapest" sounds pretty good, but throwing on something like Soulja Boy is pretty disappointing. All that volume & no thump :(</p>
+					</div>
+				</div>
+
+				<div id="Videos" class="w3-container city">
+					<div class="w3-container" style="text-align:left;max-height:350px;overflow:auto">
+					<script src="http://www.yvoschaap.com/ytpage/ytembed.js"></script>
+					<div id="ytThumbs"></div>
+
+					<script>
+						ytEmbed.init({'block':'ytThumbs','key':'AIzaSyAjRzrFIWUBkzGyca98NFNn3dfwLf6Bvh4','q':'Axess SPBT1031-RD','type':'search','results':5,'meta':true,'player':'embed','layout':'full'});
+					</script>
+					</div>
+				</div>
+				
+				<div id="Favorites" class="w3-container city">
+					<div class="w3-container" style="text-align:left;max-height:350px;overflow:auto">
+						<table class="w3-table w3-margin">
+							<tr>
+								<td></td>
+								<td style="text-align:center"><img src="https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg" height="50"/></td>
+								<td style="text-align:center"><img src="https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg" height="50"/></td>
+								<td style="text-align:center"><img src="https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg" height="50"/></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td style="text-align:center"><i class="fa fa-heart-o w3-large" style="color:red"></i></td>
+								<td style="text-align:center"><i class="fa fa-heart w3-large" style="color:red"></i></td>
+								<td style="text-align:center"><i class="fa fa-heart w3-large" style="color:red"></i></td>
+							</tr>
+							<tr>
+								<td>Product Dimensions</td>
+								<td style="text-align:center">11.4 x 6.2 x 6.6 inches</td>
+								<td style="text-align:center">11.4 x 6.2 x 6.6 inches</td>
+								<td style="text-align:center">11.4 x 6.2 x 6.6 inches</td>
+							</tr>
+							<tr>
+								<td>Item Weight</td>
+								<td style="text-align:center">3.5 pounds</td>
+								<td style="text-align:center">3.5 pounds</td>
+								<td style="text-align:center">3.5 pounds</td>
+							</tr>
+							<tr>
+								<td>Manufacturer</td>
+								<td style="text-align:center">AXESS</td>
+								<td style="text-align:center">AXESS</td>
+								<td style="text-align:center">AXESS</td>
+							</tr>
+							<tr>
+								<td>Batteries</td>
+								<td style="text-align:center">1 Lithium ion batteries required. (included)</td>
+								<td style="text-align:center">1 Lithium ion batteries required. (included)</td>
+								<td style="text-align:center">1 Lithium ion batteries required. (included)</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+
+				<div class="w3-container w3-white w3-padding">
+					<button class="w3-btn w3-right w3-white w3-border w3-margin"
+						onclick="document.getElementById('id01').style.display='none'"
+                        style="background-color:rgb(50, 153, 187);color:white">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+var currentMenuId;
+var menuOpen = false;
+var favorites = [];
+var products = [];
+var productObj = {
+	name: "AXESS SPBT1031-RD",
+	price: 129.99, 
+	imageUrl: "https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg",
+	averageRating: 4, 
+	reviews: {
+		"rating":3,
+		"title":"Better options available for less money",
+		"description":"Disappointing, for several reasons:1. Vocals are kind of muddy; sounds like the speaker is playing from inside of a cardboard box (as if the speaker was put in a box & then put on play...weird-sounding like that, like it's a bit boxed in).2. Nearly zero bass. I'm really surprised at how little bass there is; I've built Sonosubs before (subwoofers in tubes) & would have thought it would have had at least SOME bass or mid-bass in this. Nope. Stuff that's a bit more acoustic like George Ezra's \"Budapest\" sounds pretty good, but throwing on something like Soulja Boy is pretty disappointing. All that volume & no thump :(3. Doesn't get nearly as loud as I'd like. I was hoping to use this for outdoor movies with a mini LED Android projector, but the volume combined with the lack of bass is just disappointing. My little palm-sized Bluetooth speakers are nearly as loud as this is. I think part of the problem is that there's a speaker on each end, so you don't really get the full effect of a left & right speaker if you place it horizontally (the manual shows it in both horizontal & vertical configurations, with the vertical pointing the control button side up). I've found it actually sounds better standing up vertical in kind of an omni-speaker setup - not to compare it to a high-end Linkwitz, but kind of the same idea where it can at least disperse the sound a bit better. Oddly enough, it sounds best with the control button side down - gives it a throatier sound (especially for male voices, like Hozier's \"Take me to church\"), which actually points the drivers down & the \"sub\" up.On the plus side...it does work, it's a cool design (feels fairly durable!), and the price is pretty decent.Read more"
+	},
+	favorite: false,
+	specifications: {
+		"productDimensions":"11.4 x 6.2 x 6.6 inches",
+		"itemWeight":"3.5 pounds",
+		"manufacturer":"AXESS",
+		"batteries":"1 Lithium ion batteries required. (included)"
+	}
+};
+
+function specifications(key, value) {
+}
+
+function product(name, price, imageUrl, averageRating, favorite) {
+	this.name = name;
+	this.price = price;
+	this.imageUrl = imageUrl;
+	this.averageRating = averageRating;
+	this.reviews = productObj.reviews;
+	this.favorite = favorite;
+	this.specifications = productObj.specifications;
+}
+
+for (i = 0; i < 5; i++)
+{
+	products.push(new product("AXESS SPBT1031-RD", 129.99, 
+		"https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg",
+		i+1, false));
+	console.log(products[i]);
+}
+
+document.getElementsByClassName("tablink")[0].click();
+window.onload = function() {
+    var productsContainer = document.getElementById("products-container");
+    for (i = 0; i < products.length; i++) {
+		var currentProduct = i;
+        var productCard = document.createElement("div");
+        productCard.className += "w3-col one-col two-col three-col w3-card-2 w3-white";
+        productCard.style.height = "300px";
+        productCard.style.margin = "15px";
+        productCard.style.minWidth = "350px";
+        productCard.style.width = "100%-285px";
+        productCard.style.position = "relative";
+        
+        productCard.id = "product" + i;
+
+        var container = document.createElement("div");
+        container.className += "w3-container w3-center w3-margin";
+        container.style.position = "absolute";
+        container.style.top = "0px";
+        container.style.left = "0px";
+        container.style.right = "0px";
+
+        var imgContainer = document.createElement("div");
+        imgContainer.className += "w3-margin";
+        imgContainer.style.height = "150px";
+
+        var image = document.createElement("img");
+        image.src = products[currentProduct].imageUrl;
+        image.style.maxWidth = "300px";
+        image.style.maxHeight = "150px";
+
+        var productName = document.createElement("div");
+        productName.className += "w3-xlarge w3-margin";
+        productName.appendChild(document.createTextNode(products[currentProduct].name));
+
+        var starAndPriceContainer = document.createElement("div");
+        starAndPriceContainer.className += "star-and-price";
+        
+        var stars = document.createElement("div");
+        stars.className += "w3-large";
+        stars.style.float = "left";
+        stars.style.marginLeft = "30px";
+        stars.style.color = "rgb(255, 153, 0)";
+
+        for (j = 0; j < 5; j++)
+        {
+            var star = document.createElement("i");
+            if (j < products[currentProduct].averageRating)
+            {
+                star.className += "fa fa-star";
+            }
+            else
+            {
+                star.className += "fa fa-star-o";
+            }
+            stars.appendChild(star);
+        }
+
+        var price = document.createElement("div");
+        price.className += "w3-large";
+        price.style.float = "right";
+        price.style.marginRight = "30px";
+        price.appendChild(document.createTextNode("$"+products[currentProduct].price.toFixed(2)));
+        
+        var circularMenu = document.createElement("div");
+        circularMenu.className += "circular-menu";
+        
+        
+        var circle = document.createElement("div");
+        circle.className += "circle";
+        circle.id = "product" + i + "Menu";
+        
+        var favorite = document.createElement("i");
+        favorite.className += "fa fa-heart-o fa-2x";
+		favorite.style.color = "red";
+        
+        var videos = document.createElement("i");
+        videos.className += "fa fa-film fa-2x";
+        
+        var reviews = document.createElement("i");
+        reviews.className += "fa fa-star fa-2x";
+        reviews.style.color = "rgb(255, 153, 0)";
+
+        var specifications  = document.createElement("i");
+        specifications.className += "fa fa-list-ul fa-2x";
+        
+        var menuItems = [favorite, videos, reviews, specifications];
+        for (var j = 0, l = menuItems.length; j < l; j++)
+        {
+            menuItems[j].style.left = (50 - 35*Math.cos(-0.5 * Math.PI - 2*(1/l)*j*Math.PI)).toFixed(4) + "%";
+            menuItems[j].style.top = (50 + 35*Math.sin(-0.5 * Math.PI - 2*(1/l)*j*Math.PI)).toFixed(4) + "%";        
+            menuItems[j].onclick = (function() {
+                var currentProduct = products[i];
+				var iconId = 3-j;
+                return function() { 
+                    openModal(currentProduct, iconId);
+                }
+            })();
+        }
+        
+        circle.appendChild(favorite);
+        circle.appendChild(videos);
+        circle.appendChild(reviews);
+        circle.appendChild(specifications);
+        circularMenu.appendChild(circle);
+
+        imgContainer.appendChild(image);
+        container.appendChild(imgContainer);
+        container.appendChild(productName);
+        starAndPriceContainer.appendChild(stars);
+        starAndPriceContainer.appendChild(price);
+        container.appendChild(starAndPriceContainer);
+        productCard.appendChild(container);
+        productCard.appendChild(circularMenu);
+        productsContainer.appendChild(productCard);
+        
+        productCard.oncontextmenu = (function() {
+            var currentId = productCard.id;
+            return function() {
+                openCircularMenu(currentId + "Menu");
+            }
+        })();
+    }
+};
+
+function openCircularMenu(menuId)
+{
+	if (currentMenuId == null)
+	{
+		currentMenuId = menuId;
+        document.getElementById(currentMenuId).classList.toggle('open');
+		menuOpen = true;
+	}
+    else 
+	{
+		if (currentMenuId == menuId)
+		{
+			document.getElementById(currentMenuId).classList.toggle('open');
+			menuOpen = !menuOpen;
+		}
+		else
+		{
+			if (menuOpen)
+			{
+				document.getElementById(currentMenuId).classList.toggle('open');
+				currentMenuId = menuId;
+				document.getElementById(currentMenuId).classList.toggle('open');
+			}
+			else
+			{
+				currentMenuId = menuId;
+				document.getElementById(currentMenuId).classList.toggle('open');
+				menuOpen = true;
+			}
+		}
+	}
+	
+    return false;
+}
+
+function openModal(currentProduct, menuItem)
+{
+    document.getElementById(currentMenuId).classList.toggle('open');
+    currentMenuId = null;
+    document.getElementById("id01").style.display="block";
+	populateModal(currentProduct);
+	document.getElementsByClassName("tablink")[menuItem].click();
+}
+
+function populateModal(currentProduct)
+{
+	console.log(currentProduct.averageRating);
+}
+
+function openCity(evt, cityName) {
+  var i, x, tablinks;
+  x = document.getElementsByClassName("city");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < x.length; i++) {
+    tablinks[i].classList.remove("w3-light-grey");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.classList.add("w3-light-grey");
+}
+
+function myAccFunc(accordionMenu) {
+    var x = document.getElementById(accordionMenu);
+    if (x.className.indexOf("w3-show") == -1) {
+        x.className += " w3-show";
+        x.previousElementSibling.className += " w3-grey";
+    } else {
+        x.className = x.className.replace(" w3-show", "");
+        x.previousElementSibling.className =
+        x.previousElementSibling.className.replace(" w3-grey", "");
+    }
+}
+</script>
+</body>
+</html>
