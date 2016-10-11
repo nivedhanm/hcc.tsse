@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>HCC TSSE Mockup</title>
+    <title>HCC TSSE Functional Prototype</title>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="functionalPrototype.css"></link>
     <link rel="stylesheet" type="text/css" href="http://www.w3schools.com/lib/w3.css"></link>
@@ -10,96 +10,84 @@
     <script type="text/javascript" src="functionalPrototype.js"></script>
 </head>
 <body id="body">
-    <nav id="side-menu" class="w3-sidenav w3-light-grey" style="width:200px;margin-top:75px;display:inline">
-        <div class="w3-margin">Filters</div>
-        <div class="w3-accordion">
-            <a onclick="myAccFunc('price')" href="#">Price<i class="fa fa-caret-down"></i></a>
-            <div id="price" class="w3-accordion-content w3-white w3-medium">
-                <ul style="style:none;padding-bottom:15px;">
+    <nav id="filter-menu" class="filter-menu">
+        <div class="filter-menu-header">Filters</div>
+        <div>
+            <a onclick="toggleFilterCategory('priceFilter')" href="#">Price <i class="fa fa-caret-down"></i></a>
+            <div id="priceFilter" class="filter-menu-category">
+                <ul>
                     <li>
-                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">$0:01-$24.99
+                        <input id="priceFilter1" type="checkbox"> $0.01-$24.99
                     </li>
                     <li>
-                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">$25.00-$49.99
+                        <input id="priceFilter2" type="checkbox"> $25.00-$49.99
                     </li>
                     <li>
-                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">$50.00-$99.99
+                        <input id="priceFilter3" type="checkbox"> $50.00-$99.99
                     </li>
                     <li>
-                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">$100.00+
+                        <input  id="priceFilter4" type="checkbox"> $100.00+
                     </li>
-                    <li>
-                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">
+<!--                     <li>
+                        <input type="checkbox">
                         From:
-                        <input class="w3-input w3-border" style="margin-left:20px;width:100px" type="text">
+                        <input id="customPriceFilterFrom" type="text">
                         <div style="margin-left:20px">To:</div>
-                        <input class="w3-input w3-border" style="margin-left:20px;width:100px" type="text">
+                        <input id="customPriceFilterTo" type="text">
+                    </li>
+ -->            </ul>
+            </div>
+            <a onclick="toggleFilterCategory('ratingFilter')" href="#">Rating <i class="fa fa-caret-down"></i></a>
+            <div id="ratingFilter" class="filter-menu-category">     
+                <ul>
+                    <li>
+                        <input id="ratingFilter1" type="checkbox">
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star-o stars"></i>
+                        <i class="fa fa-star-o stars"></i>
+                        <i class="fa fa-star-o stars"></i>
+                        <i class="fa fa-star-o stars"></i> &amp; Up
+                    </li>
+                    <li>
+                        <input id="ratingFilter2" type="checkbox">
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star-o stars"></i>
+                        <i class="fa fa-star-o stars"></i>
+                        <i class="fa fa-star-o stars"></i> &amp; Up
+                    </li>
+                    <li>
+                        <input id="ratingFilter3" type="checkbox">
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star-o stars"></i>
+                        <i class="fa fa-star-o stars"></i> &amp; Up
+                    </li>
+                    <li>
+                        <input id="ratingFilter4" type="checkbox">
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star-o stars"></i> &amp; Up
                     </li>
                 </ul>
             </div>
-            <a onclick="myAccFunc('rating')" href="#">Rating<i class="fa fa-caret-down"></i></a>
-            <div id="rating" class="w3-accordion-content w3-white w3-medium">     
-                <ul style="style:none;padding-bottom:15px;">
+            <a onclick="toggleFilterCategory('brandFilter')" href="#">Brand <i class="fa fa-caret-down"></i></a>
+            <div id="brandFilter" class="filter-menu-category">
+                <ul>
                     <li>
-                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">
-                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
+                        <input id="brandFilter1" type="checkbox"> Axess
                     </li>
                     <li>
-                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">
-                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
-                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
-                    </li>
-                    <li>
-                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">
-                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
-                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
-                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
-                    </li>
-                    <li>
-                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">
-                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
-                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
-                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
-                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
-                    </li>
-                    <li>
-                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">
-                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
-                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
-                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
-                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
-                        <i class="fa fa-star" style="color:rgb(255, 153, 0)"></i>
-                    </li>
-                </ul>
-            </div>
-            <a onclick="myAccFunc('brand')" href="#">Brand<i class="fa fa-caret-down"></i></a>
-            <div id="brand" class="w3-accordion-content w3-white w3-medium">
-                <ul style="style:none;padding-bottom:15px;">
-                    <li>
-                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">Axess
-                    </li>
-                    <li>
-                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">Bose
-                    </li>
-                </ul>
-            </div>
-            <a onclick="myAccFunc('specifications')" href="#">Specifications<i class="fa fa-caret-down"></i></a>
-            <div id="specifications" class="w3-accordion-content w3-white w3-medium">
-                <ul style="style:none;padding-bottom:15px;">
-                    <li>
-                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">Wireless
-                    </li>
-                    <li>
-                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">Rechargeable
-                    </li>
-                    <li>
-                        <input class="w3-check" type="checkbox" style="height:15px;width:15px;">Portable
+                        <input id="brandFilter2" type="checkbox"> Bose
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
-	<div id="header" class="header" style="color:white">
+	<div id="header" class="header">
 		<i class="fa fa-user w3-xxxlarge w3-padding"></i>
         <div class="w3-container w3-padding" style="text-align:right;float:right;">
             <div style="w3-xlarge">Welcome, User!</div>
@@ -109,41 +97,44 @@
 	<div id = "main" class="main">
 		<div id = "search-results-container" class="search-results-container">
 			<div id="sort-and-search-container" class="sort-and-search-container">
-					<select id="sort-dropdown" class="w3-select" style="width:300px;float:left;background-color:rgb(50, 153, 187);color:white" name="Sort">
-						<option>Price: Low To High</option>
+					<select id="sort-dropdown" class="sort-dropdown" name="Sort" 
+                            onchange="if (this.selectedIndex) sortProducts(this.selectedIndex);">
+                        <option>Sort</option>
+						<option value="1">Price: Low To High</option>
+						<option value="2">Price: High To Low</option>
+						<option value="3">Average Rating</option>
+						<option value="4">Brand</option>
 					</select>
-					<button class="w3-btn" id="search-button" 
-                        style="float:right;height:40px;width:75px;text-align:center;background-color:rgb(50, 153, 187)"><i class="fa fa-search w3-xlarge" style="background-color:rgb(50, 153, 187)"></i></button>
-					<input class="w3-input w3-border" id="search-bar" type="text" 
-                        style="width:300px;height:40px;float:right;border-color:rgb(50, 153, 187)"></input>
+					<input id="search-bar" class="search-bar" type="text"></input>
+					<button id="search-button" class="search-button"><i class="fa fa-search" style="background-color:rgb(50, 153, 187)"></i></button>
 			</div>
-			<div id="products-container" oncontextmenu="return false;" class="w3-row" style="width:100%-210px;margin-left:200px; padding-right:65px;">
+			<div id="products-container" oncontextmenu="return false;" class="w3-row products-container">
 				
 			</div>
 		</div>
-		<div id="id01" class="w3-modal w3-padding">
+		<div id="modalWindow" class="w3-modal w3-padding">
 			<div class="w3-modal-content w3-card-4 w3-animate-zoom">
-				<header class="w3-white w3-padding">
+				<header class="w3-white w3-padding modal-header">
                     <div class="w3-padding" style="float:center">
-                        <span onclick="document.getElementById('id01').style.display='none'"
+                        <span onclick="document.getElementById('modalWindow').style.display='none'"
                             class="w3-closebtn w3-padding-top">&times;</span>
                         <h2 class="w3-half" style="text:left">
-                            <img src="https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg"/>
+                            <img id="modalImage"/>
                         </h2>
                         <div class:"w3-half" style="float:left;text-align:left">
-                            <h2>Axess SPBT1031-RD</h2>
+                            <h2 id="modalProductName"></h2>
                             <div>
                                 <div style="float:left">
-                                    <h4>$29.99</h4>
+                                    <h4 id="modalPrice"></h4>
                                     <div class="w3-xlarge" style="float:left;color:rgb(255, 153, 0)">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star-o"></i>
-                                        <i class="fa fa-star-o"></i>
+                                        <i id="modalStar1"></i>
+                                        <i id="modalStar2"></i>
+                                        <i id="modalStar3"></i>
+                                        <i id="modalStar4"></i>
+                                        <i id="modalStar5"></i>
                                     </div>
                                 </div>
-                                <i class="fa fa-heart-o w3-jumbo" style="float:right;color:red;"></i>
+                                <i id="modalFavorite" class="fa fa-heart-o w3-jumbo" style="float:right;color:red;"></i>
                             </div>
                         </div>
                     </div>
@@ -151,76 +142,53 @@
 
 				<ul class="w3-row w3-pagination w3-white w3-border-bottom w3-large" style="width:100%;">
 					<li>
-                        <a href="#" class="w3-quarter tablink" onclick="openCity(event, 'Specs')">
+                        <a href="#" class="w3-quarter tablink" onclick="openCity(event, 'specsContent')">
                         <i class="fa fa-list-ul"></i> Tech Specs</a>
                     </li>
 					<li>
-                        <a href="#" class="w3-quarter tablink" onclick="openCity(event, 'Reviews')">
+                        <a href="#" class="w3-quarter tablink" onclick="openCity(event, 'reviewsContent')">
                         <i class="fa fa-star"></i> Reviews</a>
                      </li>
 					<li>
-                        <a href="#" class="w3-quarter tablink" onclick="openCity(event, 'Videos')">
+                        <a href="#" class="w3-quarter tablink" onclick="openCity(event, 'videosContent')">
                         <i class="fa fa-film"></i> Videos</a>
                     </li>
 					<li>
-                        <a href="#" class="w3-quarter tablink" onclick="openCity(event, 'Favorites')">
-                        <i class="fa fa-heart"></i> Favorites</a>
+                        <a href="#" class="w3-quarter tablink" onclick="openCity(event, 'favoritesContent')">
+                        <i class="fa fa-heart"></i> Compare To Favorites</a>
                     </li>
 				</ul>
 
-				<div id="Specs" class="w3-container city">
+				<div id="specsContent" class="w3-container city modal-specs-tab-content">
 					<div class="w3-container" style="text-align:left;max-height:350px;overflow:auto">
-						<table class="w3-table w3-margin">
-							<tr>
-								<td>Product Dimensions</td>
-								<td>11.4 x 6.2 x 6.6 inches</td>
-							</tr>
-							<tr>
-								<td>Item Weight</td>
-								<td>3.5 pounds</td>
-							</tr>
-							<tr>
-								<td>Manufacturer</td>
-								<td>AXESS</td>
-							</tr>
-							<tr>
-								<td>Batteries</td>
-								<td>1 Lithium ion batteries required. (included)</td>
-							</tr>
+						<table id="modalSecificationsTable" class="w3-table w3-margin">
+
 						</table>
 					</div>
 				</div>
-				<div id="Reviews" class="w3-container city">
-					<div class="w3-container" style="text-align:left;max-height:350px;overflow:auto">
-                        <div class="w3-large" style="float:left;margin-right:15px;color:rgb(255, 153, 0)">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star-o"></i>
-                            <i class="fa fa-star-o"></i>
-                        </div>
-						<p><b>Better options available for less money</b></p>
-						<p>Disappointing, for several reasons:</p>
-						<p>1. Vocals are kind of muddy; sounds like the speaker is playing from inside of a cardboard box (as if the speaker was put in a box & then put on play...weird-sounding like that, like it's a bit boxed in).</p>
-						<p>2. Nearly zero bass. I'm really surprised at how little bass there is; I've built Sonosubs before (subwoofers in tubes) & would have thought it would have had at least SOME bass or mid-bass in this. Nope. Stuff that's a bit more acoustic like George Ezra's "Budapest" sounds pretty good, but throwing on something like Soulja Boy is pretty disappointing. All that volume & no thump :(</p>
-					</div>
-				</div>
+                
+				<div id="reviewsContent" class="w3-container city modal-reviews-tab-content" style="text-align:left;max-height:350px;overflow:auto">
+				
+                </div>
 
-				<div id="Videos" class="w3-container city">
-					<div class="w3-container" style="text-align:left;max-height:350px;overflow:auto">
-					<div id="ytThumbs"></div>
-
-					<script>
-						ytEmbed.init({'block':'ytThumbs','key':'AIzaSyAjRzrFIWUBkzGyca98NFNn3dfwLf6Bvh4','q':'Axess SPBT1031-RD','type':'search','results':5,'meta':true,'player':'embed','layout':'full'});
-					</script>
+				<div id="videosContent" class="w3-container city modal-videos-tab-content">
+					<div id="modalVideosContainer" class="w3-container" style="max-height:350px;overflow:auto">
+                        <div id="ytThumbs"></div>
 					</div>
 				</div>
 				
-				<div id="Favorites" class="w3-container city">
+				<div id="favoritesContent" class="w3-container city modal-favorites-tab-content">
 					<div class="w3-container" style="text-align:left;max-height:350px;overflow:auto">
-						<table class="w3-table w3-margin">
+						<table id="modalFavoritesTable" class="w3-table w3-margin">
 							<tr>
 								<td></td>
+								<td style="text-align:center"><img src="https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg" height="50"/></td>
+								<td style="text-align:center"><img src="https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg" height="50"/></td>
+								<td style="text-align:center"><img src="https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg" height="50"/></td>
+								<td style="text-align:center"><img src="https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg" height="50"/></td>
+								<td style="text-align:center"><img src="https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg" height="50"/></td>
+								<td style="text-align:center"><img src="https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg" height="50"/></td>
+								<td style="text-align:center"><img src="https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg" height="50"/></td>
 								<td style="text-align:center"><img src="https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg" height="50"/></td>
 								<td style="text-align:center"><img src="https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg" height="50"/></td>
 								<td style="text-align:center"><img src="https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg" height="50"/></td>
@@ -261,7 +229,7 @@
 
 				<div class="w3-container w3-white w3-padding">
 					<button class="w3-btn w3-right w3-white w3-border w3-margin"
-						onclick="document.getElementById('id01').style.display='none'"
+						onclick="document.getElementById('modalWindow').style.display='none'"
                         style="background-color:rgb(50, 153, 187);color:white">Close</button>
 				</div>
 			</div>
