@@ -320,6 +320,10 @@ visibility: hidden;
     color: rgb(255, 153, 0);
 }
 
+.modal-favorites-tab-content td {
+    min-width: 250px;
+}
+
 ul.tab {
     margin: 0;
     padding: 0;

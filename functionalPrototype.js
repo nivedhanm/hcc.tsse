@@ -1,3 +1,5 @@
+var bsService = new BSAutoSwitch(['elkanacmmmdgbnhdjopfdeafchmhecbf', 'gdgmmfgjalcpnakohgcfflgccamjoipd ']);
+
 var currentMenuId;
 var menuOpen = false;
 var favorites = [];
@@ -7,135 +9,210 @@ var filters = {
 	"price":[false,false,false,false],
 	"averageRating":[false,false,false,false]
 };
-var productObj = {
-    brand: "AXESS",
-	model: "SPBT1031-RD",
-	price: 129.99, 
-	imageUrl: "https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg",
-	averageRating: 3.5, 
-	reviews: [
-        {"rating":3,
-		"title":"Better options available for less money",
-		"description":"Disappointing, for several reasons:1. Vocals are kind of muddy; sounds like the speaker is playing from inside of a cardboard box (as if the speaker was put in a box & then put on play...weird-sounding like that, like it's a bit boxed in).2. Nearly zero bass. I'm really surprised at how little bass there is; I've built Sonosubs before (subwoofers in tubes) & would have thought it would have had at least SOME bass or mid-bass in this. Nope. Stuff that's a bit more acoustic like George Ezra's \"Budapest\" sounds pretty good, but throwing on something like Soulja Boy is pretty disappointing. All that volume & no thump :(3. Doesn't get nearly as loud as I'd like. I was hoping to use this for outdoor movies with a mini LED Android projector, but the volume combined with the lack of bass is just disappointing. My little palm-sized Bluetooth speakers are nearly as loud as this is. I think part of the problem is that there's a speaker on each end, so you don't really get the full effect of a left & right speaker if you place it horizontally (the manual shows it in both horizontal & vertical configurations, with the vertical pointing the control button side up). I've found it actually sounds better standing up vertical in kind of an omni-speaker setup - not to compare it to a high-end Linkwitz, but kind of the same idea where it can at least disperse the sound a bit better. Oddly enough, it sounds best with the control button side down - gives it a throatier sound (especially for male voices, like Hozier's \"Take me to church\"), which actually points the drivers down & the \"sub\" up.On the plus side...it does work, it's a cool design (feels fairly durable!), and the price is pretty decent.Read more"},
-        {"rating":4,
-		"title":"Better options available for less money",
-		"description":"Disappointing, for several reasons:1. Vocals are kind of muddy; sounds like the speaker is playing from inside of a cardboard box (as if the speaker was put in a box & then put on play...weird-sounding like that, like it's a bit boxed in).2. Nearly zero bass. I'm really surprised at how little bass there is; I've built Sonosubs before (subwoofers in tubes) & would have thought it would have had at least SOME bass or mid-bass in this. Nope. Stuff that's a bit more acoustic like George Ezra's \"Budapest\" sounds pretty good, but throwing on something like Soulja Boy is pretty disappointing. All that volume & no thump :(3. Doesn't get nearly as loud as I'd like. I was hoping to use this for outdoor movies with a mini LED Android projector, but the volume combined with the lack of bass is just disappointing. My little palm-sized Bluetooth speakers are nearly as loud as this is. I think part of the problem is that there's a speaker on each end, so you don't really get the full effect of a left & right speaker if you place it horizontally (the manual shows it in both horizontal & vertical configurations, with the vertical pointing the control button side up). I've found it actually sounds better standing up vertical in kind of an omni-speaker setup - not to compare it to a high-end Linkwitz, but kind of the same idea where it can at least disperse the sound a bit better. Oddly enough, it sounds best with the control button side down - gives it a throatier sound (especially for male voices, like Hozier's \"Take me to church\"), which actually points the drivers down & the \"sub\" up.On the plus side...it does work, it's a cool design (feels fairly durable!), and the price is pretty decent.Read more"}
-    ],
-	favorite: false,
-	specifications: {"Product Dimensions":"11.4 x 6.2 x 6.6 inches",
-        "Item Weight":"3.5 pounds",
-        "Manufacturer":"AXESS",
-        "Batteries":"1 Lithium ion batteries required. (included)"},
-	id: "productObj",
-	showOnPage: false
-};
 
-function product(brand, model, price, imageUrl, averageRating, reviews, favorite, specifications, id, showOnPage) {
+var urls = [
+    {"amazon":"https://www.amazon.com/Philips-BT3080B-37-Wireless-Bluetooth/dp/B010ND6PAC", "newegg":"http://www.newegg.com/Product/Product.aspx?Item=N82E16855503074"},
+    {"amazon":"https://www.amazon.com/Speaker-Bluetooth-Speakers-Portable-Wireless/dp/B00ES2BQ7M", "newegg":"http://www.newegg.com/Product/Product.aspx?Item=9SIAAM84FZ9894"},
+    {"amazon":"https://www.amazon.com/Cambridge-SoundWorks-OontZ-Angle-Generation/dp/B010OYASRG", "newegg":"http://www.newegg.com/Product/Product.aspx?Item=9SIA45C4G62160"},
+    {"amazon":"https://www.amazon.com/JBL-Portable-Splashproof-Bluetooth-Speaker/dp/B0147JTPY6", "newegg":"http://www.newegg.com/Product/Product.aspx?Item=9SIA4X74SU5022"},
+    {"amazon":"https://www.amazon.com/Philips-SB365B-37-Bluetooth-Rechargeable/dp/B0136RBIWM", "newegg":"http://www.newegg.com/Product/Product.aspx?Item=N82E16855503069"},
+    {"amazon":"https://www.amazon.com/Philips-BT2200B-27-Waterproof-Technology/dp/B00RK3T3OY", "newegg":"http://www.newegg.com/Product/Product.aspx?Item=N82E16855503059"},
+    {"amazon":"https://www.amazon.com/ARCTIC-Bluetooth-Speaker-Microphone-Hands-Free/dp/B00F4EONWS", "newegg":"http://www.newegg.com/Product/Product.aspx?Item=9SIA4RE4KZ8056"},
+    {"amazon":"https://www.amazon.com/GOgroove-Multimedia-Bluetooth-Technology-Removable/dp/B00Q3D085U", "newegg":"http://www.newegg.com/Product/Product.aspx?Item=N82E16855681005"}
+];
+
+function product(brand, model, price, imageUrl, averageRating, reviews, specifications, id, amazonUrl, neweggUrl) {
     this.brand = brand;
 	this.model = model;
 	this.price = price;
 	this.imageUrl = imageUrl;
 	this.averageRating = averageRating;
 	this.reviews = reviews;
-	this.favorite = favorite;
+	this.favorite = false;
 	this.specifications = specifications;
     this.id = id;
-	this.showOnPage = showOnPage;
+	this.showOnPage = true;
+    this.amazonUrl = amazonUrl;
+    this.neweggUrl = neweggUrl;
 }
 
-window.onload = function() {
+window.onload = function() { 
 	buildProducts();
-	buildProductCards();
+   	/* buildProductCards(); */
 };
 
 function buildProducts() {
-	for (i = 0; i < 5; i++)
+    for (i = 0; i < urls.length; i++) {
+        products.push(new product("", "", 0, "", 0, [], {}, "product" + i, urls[i]["amazon"], urls[i]["newegg"]));
+        bsService.loadMetadata(urls[i]["amazon"], {}, amazon);
+        bsService.loadMetadata(urls[i]["newegg"], {}, newegg);
+    }
+/* 	for (i = 0; i < 5; i++)
 	{
 		
 		products.push(new product("AXESS", "SPBT1031-RD", 119.99 - (25 * i), 
 			"https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg",
 			1 + (0.5 * (i + 1)), productObj.reviews, false, productObj.specifications,
 			"product" + i, true));
-	}
+	} */
 }
 
-function buildProductCards() {
-    var productsContainer = document.getElementById("products-container");
-    for (i = 0; i < products.length; i++) {
-		var currentProduct = i;
-        var productCard = document.createElement("div");
-        productCard.className = "product-card";        
-        productCard.id = products[currentProduct].id;
+function amazon(err, metadataAndMetametaData)
+{
+	var unwrappedMetadata = BSUtils.unwrap(metadataAndMetametaData.metadata);
+    
+    var i = 0;
+    for (i; i < products.length; i++)
+    {
+        if (products[i].amazonUrl == unwrappedMetadata["location"]) {
+            break;
+        }
+    }
 
-        var container = document.createElement("div");
-        container.className += "product-container";
-		addTooltip(container, "Right&nbsp;click&nbsp;to&nbsp;view/close&nbsp;options&nbsp;menu");
+    try {
+        var price = Number(unwrappedMetadata["price"].substring(1));
+        var imageUrl = unwrappedMetadata["main_images"][0]["location"];
+        var averageRating = Number(unwrappedMetadata["overall_rating"].substring(0, 2));
 
-        var imgContainer = document.createElement("div");
-        imgContainer.className = "product-image-container";
-
-        var image = document.createElement("img");
-        image.src = products[currentProduct].imageUrl;
-
-        var productName = document.createElement("div");
-        productName.className = "product-name";
-        productName.innerHTML = products[currentProduct].brand + " " + products[currentProduct].model + " ";
-		
-		var favoriteIcon = document.createElement("i");
-		favoriteIcon.style.color = "red";
-		favoriteIcon.className = "fa ";
-		favoriteIcon.id = products[currentProduct].id + "Favorite";
-		productName.appendChild(favoriteIcon);
-
-        var starAndPriceContainer = document.createElement("div");
-        starAndPriceContainer.className = "product-rating-and-price-container";
+        products[i].price = price;
+        products[i].imageUrl = imageUrl;
+        products[i].averageRating = averageRating;
         
-        var stars = document.createElement("div");
-        stars.className = "product-rating";
-
-        for (j = 0; j < 5; j++) {
-            var star = document.createElement("i");
-            if (j + 0.5 < products[currentProduct].averageRating) {
-                star.className = "fa fa-star";
-            } else if (j + 0.5 == products[currentProduct].averageRating) {
-                star.className = "fa fa-star-half-o";
-            } else {
-                star.className = "fa fa-star-o";
-            }
-            stars.appendChild(star);
+        var reviews = unwrappedMetadata["reviews"];
+        
+        for (j = 0; j < reviews.length; j++) {
+            var rating = Number(reviews[j]["rating"].substring(0, 1));
+            var title = reviews[j]["title"];
+            var description = reviews[j]["description"];
+            
+            products[i].reviews.push({"rating":rating, "title":title, "description":description});
         }
 
-        var price = document.createElement("div");
-        price.className = "product-price";
-        price.innerHTML = "$"+products[currentProduct].price.toFixed(2);
-
-		var circularMenu = buildCircularMenu(currentProduct);
-
-        imgContainer.appendChild(image);
-        container.appendChild(imgContainer);
-        container.appendChild(productName);
-        starAndPriceContainer.appendChild(stars);
-        starAndPriceContainer.appendChild(price);
-        container.appendChild(starAndPriceContainer);
-        productCard.appendChild(container);
-        productCard.appendChild(circularMenu);
+    } catch (e) {
         
-        productCard.oncontextmenu = (function() {
-            var currentId = productCard.id;
-            return function() {
-                openCircularMenu(currentId + "Menu");
-            }
-        })();
-		
-        
-		var productCardId = productCard.id;
-		productCards[productCardId] = productCard;
     }
     
-    for (var i = 0; i < products.length; i++) {
-		var productCardId = products[i].id;
-        productsContainer.appendChild(productCards[productCardId]);
-    }	
+    if (products[i].brand != "") {
+        buildProductCard(products[i]);
+    }
+}
+
+function newegg(err, metadataAndMetametaData) {
+	var unwrappedMetadata = BSUtils.unwrap(metadataAndMetametaData.metadata);
+    console.log(unwrappedMetadata);
+    
+    var i = 0;
+    for (i; i < products.length; i++)
+    {
+        if (products[i].neweggUrl == unwrappedMetadata["location"]) {
+            break;
+        }
+    }
+    try {
+        var specsTable = unwrappedMetadata["specifications_table"];
+        
+        for (j = 0; j < specsTable.length; j++)
+        {
+            var specifications = specsTable[j]["specifications"];
+            for (k = 0; k < specifications.length; k++) {
+                if (specifications[k]["name"] == "Brand")
+                {
+                    var brand = specifications[k]["value"];
+                    products[i].brand = brand;
+                } else if (specifications[k]["name"] == "Model") {
+                    var model = specifications[k]["value"];
+                    products[i].model = model;
+                } else {
+                    var name = specifications[k]["name"];
+                    var value = specifications[k]["value"];
+                    products[i].specifications[name] = value;
+                }
+            }
+        }
+    } catch (e) {
+        
+    }
+    
+    if (products[i].price != 0) {
+        buildProductCard(products[i]);
+    }
+
+}
+
+function buildProductCard(product) {
+    var productsContainer = document.getElementById("products-container");
+    
+    var productCard = document.createElement("div");
+    productCard.className = "product-card";        
+    productCard.id = product.id;
+
+    var container = document.createElement("div");
+    container.className += "product-container";
+    addTooltip(container, "Right&nbsp;click&nbsp;to&nbsp;view/close&nbsp;options&nbsp;menu");
+
+    var imgContainer = document.createElement("div");
+    imgContainer.className = "product-image-container";
+
+    var image = document.createElement("img");
+    image.src = product.imageUrl;
+
+    var productName = document.createElement("div");
+    productName.className = "product-name";
+    productName.innerHTML = product.brand + " " + product.model + " ";
+    
+    var favoriteIcon = document.createElement("i");
+    favoriteIcon.style.color = "red";
+    favoriteIcon.className = "fa ";
+    favoriteIcon.id = product.id + "Favorite";
+    productName.appendChild(favoriteIcon);
+
+    var starAndPriceContainer = document.createElement("div");
+    starAndPriceContainer.className = "product-rating-and-price-container";
+    
+    var stars = document.createElement("div");
+    stars.className = "product-rating";
+
+    for (j = 0; j < 5; j++) {
+        var star = document.createElement("i");
+        if (j + 0.5 < product.averageRating) {
+            star.className = "fa fa-star";
+        } else if (j + 0.5 == product.averageRating) {
+            star.className = "fa fa-star-half-o";
+        } else {
+            star.className = "fa fa-star-o";
+        }
+        stars.appendChild(star);
+    }
+
+    var price = document.createElement("div");
+    price.className = "product-price";
+    price.innerHTML = "$"+product.price.toFixed(2);
+
+    var circularMenu = buildCircularMenu(products.indexOf(product));
+
+    imgContainer.appendChild(image);
+    container.appendChild(imgContainer);
+    container.appendChild(productName);
+    starAndPriceContainer.appendChild(stars);
+    starAndPriceContainer.appendChild(price);
+    container.appendChild(starAndPriceContainer);
+    productCard.appendChild(container);
+    productCard.appendChild(circularMenu);
+    
+    productCard.oncontextmenu = (function() {
+        var currentId = productCard.id;
+        return function() {
+            openCircularMenu(currentId + "Menu");
+        }
+    })();
+    
+    
+    var productCardId = productCard.id;
+    productCards[productCardId] = productCard;
+    
+    
+    productsContainer.appendChild(productCard);
+    	
 }
 
 function buildCircularMenu(i) {
@@ -303,34 +380,38 @@ function populateModalReviews(currentProduct) {
     while (reviews.firstChild) {
         reviews.removeChild(reviews.firstChild);
     }
-    for (i = 0; i < currentProduct.reviews.length; i++)
-    {
-        var review = document.createElement("div");
-        review.className = "review";
-        
-        var stars = document.createElement("div");
-        stars.className = "stars";
-        for (j = 0; j < 5; j++)
+    if (currentProduct.reviews.length == 0) {
+        reviews.appendChild(document.createTextNode("Could Not Retrieve Reviews"));
+    } else {
+        for (i = 0; i < currentProduct.reviews.length; i++)
         {
-            var star = document.createElement("i");
-            if (j < currentProduct.reviews[i]["rating"]) {
-                star.className = "fa fa-star";
-            } else {
-                star.className = "fa fa-star-o";
+            var review = document.createElement("div");
+            review.className = "review";
+            
+            var stars = document.createElement("div");
+            stars.className = "stars";
+            for (j = 0; j < 5; j++)
+            {
+                var star = document.createElement("i");
+                if (j < currentProduct.reviews[i]["rating"]) {
+                    star.className = "fa fa-star";
+                } else {
+                    star.className = "fa fa-star-o";
+                }
+                stars.appendChild(star);
             }
-            stars.appendChild(star);
+            review.appendChild(stars);
+            
+            var title = document.createElement("div");
+            title.innerHTML = "<b>" + currentProduct.reviews[i]["title"] + "</b>";
+            review.appendChild(title);
+            
+            var description = document.createElement("div");
+            description.appendChild(document.createTextNode(currentProduct.reviews[i]["description"]));
+            review.appendChild(description);
+            
+            reviews.appendChild(review);
         }
-        review.appendChild(stars);
-        
-        var title = document.createElement("div");
-        title.innerHTML = "<b>" + currentProduct.reviews[i]["title"] + "</b>";
-        review.appendChild(title);
-        
-        var description = document.createElement("div");
-        description.appendChild(document.createTextNode(currentProduct.reviews[i]["description"]));
-        review.appendChild(description);
-        
-        reviews.appendChild(review);
     }
 }
 
@@ -343,14 +424,12 @@ function populateModalVideos(currentProduct) {
 }
 
 function populateModalCompareFavorites(currentProduct) {
-	console.log("populateModalCompareFavorites");
 	var favoritesTable = document.getElementById("modalFavoritesTable");
     while (favoritesTable.firstChild) {
         favoritesTable.removeChild(favoritesTable.firstChild);
     }
 	var imageRow = document.createElement("tr");
 	imageRow.appendChild(document.createElement("td"));
-	console.log(imageRow);
 	var image = document.createElement("td");
 	image.innerHTML = "<img src=\"" + currentProduct.imageUrl + "\" height=\"50\"/>";
 	imageRow.appendChild(image);
@@ -433,7 +512,12 @@ function populateModalCompareFavorites(currentProduct) {
 		for (var j = 0; j < favorites.length; j++) {
 			if (favorites[j].id != currentProduct.id) {
 				details = document.createElement("td");
-				details.innerHTML = favorites[j].specifications[i];
+                if (favorites[j].specifications[i] === undefined)
+                {
+                    details.innerHTML = "N/A";
+                } else {
+                    details.innerHTML = favorites[j].specifications[i];
+                }
 				row.appendChild(details);
 			}
 		}
@@ -522,8 +606,7 @@ function filterCards(category, index) {
 	filters[category][index] = !filters[category][index];
 	for (var i = 0; i < products.length; i++) {
 		if (!matchesPriceFilters(products[i]) || 
-				!matchesReviewFilters(products[i]) || 
-				!matchesBrandFilters(products[i])) {
+				!matchesReviewFilters(products[i])) {
 			products[i].showOnPage = false;	
 		} else {
 			products[i].showOnPage = true;
@@ -574,8 +657,4 @@ function matchesReviewFilters(product) {
 	}
 	
 	return filterMatch;
-}
-
-function matchesBrandFilters(product) {
-	return true;
 }
