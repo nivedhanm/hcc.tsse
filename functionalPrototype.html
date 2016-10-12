@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HCC TSSE Functional Prototype</title>
+    <meta charset="utf-8">
+
+	<!-- bsjsCore Files. You must include them in this order so as to use any BigSemantics porject -->
+	<!-- Readyable is a class used to handle the asynchronous load time of the BS project
+		BSAutoSwitch is an interface to BigSemantics that can switch between using the lab's hosted service for metadata
+			and using a browser-installed extension. BSService and BSSExtension are implementations -->
+	<script type="text/javascript" src="BigSemanticsJavaScript/bsjsCore/Readyable.js"></script>
+	<script type="text/javascript" src="BigSemanticsJavaScript/bsjsCore/BSAutoSwitch.js"></script>
+	<script type="text/javascript" src="BigSemanticsJavaScript/bsjsCore/BSService.js"></script>
+	<script type="text/javascript" src="BigSemanticsJavaScript/bsjsCore/BSExtension.js"></script>
+	<!-- BSUtils, Downloader, ParsedURL, and simplBase are helper classes. Include them, but don't really worry about them-->
+	<script type="text/javascript" src="BigSemanticsJavaScript/bsjsCore/BSUtils.js"></script>
+	<script type="text/javascript" src="BigSemanticsJavaScript/bsjsCore/ParsedURL.js"></script>
+	<script type="text/javascript" src="BigSemanticsJavaScript/bsjsCore/Downloader.js"></script>
+	<script type="text/javascript" src="BigSemanticsJavaScript/bsjsCore/simpl/simplBase.js"></script>
+	<!-- MetadataTask is the preffered interface for using BSJS when you only want data and not to render it via our software
+		RepoMan loads a Meta-metadata repository. Avoid doing anything with it directly; it's messy-->
+	<script type="text/javascript" src="BigSemanticsJavaScript/bsjsCore/MetadataTask.js"></script>
+	<script type="text/javascript" src="BigSemanticsJavaScript/bsjsCore/RepoMan.js"></script>
+	<!-- Various helped classes for renderers. MetadataViewModel takes our raw data and puts it in a nice format for the
+		 various metadata renderers (of which only one is shown here). InterfaceStyle is a dictionary that lets us style
+		 elements differently in different renderers. -->
+	<script type="text/javascript" src="BigSemanticsJavaScript/bsjsCore/MetadataViewModel.js"></script>
+	<script type="text/javascript" src="BigSemanticsJavaScript/renderers/interfaceStyle.js"></script>
+	<!-- The RenderingFiles!! RendererBase is your entry point for rendering via our software. RenderingTask handles some various data processing and can, on a good day, select an ideal renderer for metadata if one isn't specified. Vanilla Mice, mice, baby does *most* of the rendering work. The initial plan was for VanillaMICE to extend RendererBase, but in practice they've began to diverge.
+
+	Bootstrap.min.css is a neccesary evil - there's some particular bit of css in there that lets MICE render properly. I'm trying to hunt it
+	down so that bootstrap is not a dependency, but I haven't succeeded yet
+	-->
+
+	<script type="text/javascript" src="BigSemanticsJavaScript/renderers/RendererBase.js"></script>
+	<script type="text/javascript" src="BigSemanticsJavaScript/renderers/RenderingTask.js"></script>
+	<script type="text/javascript" src="BigSemanticsJavaScript/renderers/VanillaMICE.js"></script>
+
+    <link href="../BigSemanticsJavaScript/renderers/styles/metadataRenderer.css" rel="stylesheet" type="text/css">
+
+	<!--Webpage-specific javascript and CSS includes-->
+<!-- 	<script type="text/javascript" src="./data.js"></script>
+    <link href="./demo.css" rel="stylesheet" type="text/css">
+ -->    <!-- I like the roboto font because it makes me feel like a real developer-->
+	<!-- <link href='https://fonts.googleapis.com/css?family=Roboto:400,900italic,900,700italic,700,500,400italic,500italic,300italic,300,100italic,100' rel='stylesheet' type='text/css'> -->
+
+    <link rel="stylesheet" type="text/css" href="functionalPrototype.css"></link>
+    <link rel="stylesheet" type="text/css" href="http://www.w3schools.com/lib/w3.css"></link>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+    <script type="text/javascript" src="http://www.yvoschaap.com/ytpage/ytembed.js"></script>
+    <script type="text/javascript" src="functionalPrototype.js"></script>
+</head>
+<body id="body" onclick="closeCircularMenu()">
+    <nav id="filter-menu" class="filter-menu">
+        <div class="filter-menu-header">Filters</div>
+        <div>
+            <a onclick="toggleFilterCategory('priceFilter')" href="#">Price <i class="fa fa-caret-down"></i></a>
+            <div id="priceFilter" class="filter-menu-category">
+                <ul>
+                    <li>
+                        <input id="priceFilter1" type="checkbox" onclick="filterCards('price', 0)"> $0.01-$24.99
+                    </li>
+                    <li>
+                        <input id="priceFilter2" type="checkbox" onclick="filterCards('price', 1)"> $25.00-$49.99
+                    </li>
+                    <li>
+                        <input id="priceFilter3" type="checkbox" onclick="filterCards('price', 2)"> $50.00-$99.99
+                    </li>
+                    <li>
+                        <input id="priceFilter4" type="checkbox" onclick="filterCards('price', 3)"> $100.00+
+                    </li>
+                </ul>
+            </div>
+            <a onclick="toggleFilterCategory('ratingFilter')" href="#">Rating <i class="fa fa-caret-down"></i></a>
+            <div id="ratingFilter" class="filter-menu-category">     
+                <ul>
+                    <li>
+                        <input id="ratingFilter1" type="checkbox" onclick="filterCards('averageRating', 0)">
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star-o stars"></i>
+                        <i class="fa fa-star-o stars"></i>
+                        <i class="fa fa-star-o stars"></i>
+                        <i class="fa fa-star-o stars"></i> &amp; Up
+                    </li>
+                    <li>
+                        <input id="ratingFilter2" type="checkbox" onclick="filterCards('averageRating', 1)">
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star-o stars"></i>
+                        <i class="fa fa-star-o stars"></i>
+                        <i class="fa fa-star-o stars"></i> &amp; Up
+                    </li>
+                    <li>
+                        <input id="ratingFilter3" type="checkbox" onclick="filterCards('averageRating', 2)">
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star-o stars"></i>
+                        <i class="fa fa-star-o stars"></i> &amp; Up
+                    </li>
+                    <li>
+                        <input id="ratingFilter4" type="checkbox" onclick="filterCards('averageRating', 3)">
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star stars"></i>
+                        <i class="fa fa-star-o stars"></i> &amp; Up
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+	<div id="header" class="header">
+		<i class="fa fa-user w3-xxxlarge w3-padding"></i>
+        <div class="w3-container w3-padding" style="text-align:right;float:right;">
+            <div style="w3-xlarge">Welcome, User!</div>
+            <i class="fa fa-cog w3-large"></i> Settings | Sign Out
+        </div>
+	</div>
+	<div id = "main" class="main">
+		<div id = "search-results-container" class="search-results-container">
+			<div id="sort-and-search-container" class="sort-and-search-container">
+					<select id="sort-dropdown" class="sort-dropdown" name="Sort" 
+                            onchange="if (this.selectedIndex) sortProducts(this.selectedIndex);">
+                        <option>Sort</option>
+						<option value="1">Price: Low To High</option>
+						<option value="2">Price: High To Low</option>
+						<option value="3">Average Rating</option>
+						<option value="4">Brand</option>
+					</select>
+					<input id="search-bar" class="search-bar" type="text"></input>
+					<button id="search-button" class="search-button"><i class="fa fa-search" style="background-color:rgb(50, 153, 187)"></i></button>
+			</div>
+			<div id="products-container" oncontextmenu="return false;" class="w3-row products-container">
+				
+			</div>
+		</div>
+		<div id="modalWindow" class="w3-modal w3-padding">
+			<div class="w3-modal-content w3-card-4 w3-animate-zoom" style="width:1050px">
+				<header class="w3-white w3-padding modal-header">
+                    <div class="w3-padding" style="float:center">
+                        <span onclick="document.getElementById('modalWindow').style.display='none'"
+                            class="w3-closebtn w3-padding-top">&times;</span>
+                        <h2 class="w3-half" style="text:left">
+                            <img id="modalImage"/>
+                        </h2>
+                        <div class:"w3-half" style="float:left;text-align:left">
+                            <h2 id="modalProductName"></h2>
+                            <div>
+                                <div style="float:left">
+                                    <h4 id="modalPrice"></h4>
+                                    <div class="w3-xlarge" style="float:left;color:rgb(255, 153, 0)">
+                                        <i id="modalStar1"></i>
+                                        <i id="modalStar2"></i>
+                                        <i id="modalStar3"></i>
+                                        <i id="modalStar4"></i>
+                                        <i id="modalStar5"></i>
+                                    </div>
+                                </div>
+								<div class="w3-jumbo">
+									<i id="modalFavorite" style="float:right;color:red;"></i>
+								</div>
+                            </div>
+                        </div>
+                    </div>
+				</header>
+
+				<ul class="w3-row w3-pagination w3-white w3-border-bottom w3-large" style="width:100%;">
+					<li>
+                        <a href="#" class="w3-quarter tablink" onclick="openTab(event, 'specsContent')">
+                        <i class="fa fa-list-ul"></i> Tech Specs</a>
+                    </li>
+					<li>
+                        <a href="#" class="w3-quarter tablink" onclick="openTab(event, 'reviewsContent')">
+                        <i class="fa fa-star"></i> Reviews</a>
+                     </li>
+					<li>
+                        <a href="#" class="w3-quarter tablink" onclick="openTab(event, 'videosContent')">
+                        <i class="fa fa-film"></i> Videos</a>
+                    </li>
+					<li>
+                        <a href="#" class="w3-quarter tablink" onclick="openTab(event, 'favoritesContent')">
+                        <i class="fa fa-heart"></i> Compare To Favorites</a>
+                    </li>
+				</ul>
+
+				<div id="specsContent" class="w3-container tab-content modal-specs-tab-content">
+					<div class="w3-container" style="text-align:left;max-height:350px;overflow:auto">
+						<table id="modalSecificationsTable" class="w3-table w3-margin">
+
+						</table>
+					</div>
+				</div>
+                
+				<div id="reviewsContent" class="w3-container tab-content modal-reviews-tab-content" style="text-align:left;max-height:350px;overflow:auto">
+				
+                </div>
+
+				<div id="videosContent" class="w3-container tab-content modal-videos-tab-content">
+					<div id="modalVideosContainer" class="w3-container" style="max-height:350px;overflow:auto">
+                        <div id="ytThumbs"></div>
+					</div>
+				</div>
+				
+				<div id="favoritesContent" class="w3-container tab-content modal-favorites-tab-content">
+					<div class="w3-container" style="text-align:left;max-height:350px;overflow:auto">
+						<table id="modalFavoritesTable" class="w3-table w3-margin">
+
+						</table>
+					</div>
+				</div>
+
+				<div class="w3-container w3-white w3-padding">
+					<button class="w3-btn w3-right w3-white w3-border w3-margin"
+						onclick="document.getElementById('modalWindow').style.display='none'"
+                        style="background-color:rgb(50, 153, 187);color:white">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
