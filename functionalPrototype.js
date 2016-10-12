@@ -3,6 +3,10 @@ var menuOpen = false;
 var favorites = [];
 var products = [];
 var productCards = [];
+var filters = {
+	"price":[false,false,false,false],
+	"averageRating":[false,false,false,false]
+};
 var productObj = {
     brand: "AXESS",
 	model: "SPBT1031-RD",
@@ -21,10 +25,12 @@ var productObj = {
 	specifications: {"Product Dimensions":"11.4 x 6.2 x 6.6 inches",
         "Item Weight":"3.5 pounds",
         "Manufacturer":"AXESS",
-        "Batteries":"1 Lithium ion batteries required. (included)"}
+        "Batteries":"1 Lithium ion batteries required. (included)"},
+	id: "productObj",
+	showOnPage: false
 };
 
-function product(brand, model, price, imageUrl, averageRating, reviews, favorite, specifications, id) {
+function product(brand, model, price, imageUrl, averageRating, reviews, favorite, specifications, id, showOnPage) {
     this.brand = brand;
 	this.model = model;
 	this.price = price;
@@ -34,26 +40,36 @@ function product(brand, model, price, imageUrl, averageRating, reviews, favorite
 	this.favorite = favorite;
 	this.specifications = specifications;
     this.id = id;
-}
-
-for (i = 0; i < 5; i++)
-{
-	products.push(new product("AXESS", "SPBT1031-RD", 119.99 - (25 * i), 
-		"https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg",
-		1 + (0.5 * (i + 1)), productObj.reviews, false, productObj.specifications, "product" + i));
+	this.showOnPage = showOnPage;
 }
 
 window.onload = function() {
+	buildProducts();
+	buildProductCards();
+};
+
+function buildProducts() {
+	for (i = 0; i < 5; i++)
+	{
+		
+		products.push(new product("AXESS", "SPBT1031-RD", 119.99 - (25 * i), 
+			"https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg",
+			1 + (0.5 * (i + 1)), productObj.reviews, false, productObj.specifications,
+			"product" + i, true));
+	}
+}
+
+function buildProductCards() {
     var productsContainer = document.getElementById("products-container");
     for (i = 0; i < products.length; i++) {
 		var currentProduct = i;
         var productCard = document.createElement("div");
-        productCard.className = "product-card";
-        
+        productCard.className = "product-card";        
         productCard.id = products[currentProduct].id;
 
         var container = document.createElement("div");
         container.className += "product-container";
+		addTooltip(container, "Right&nbsp;click&nbsp;to&nbsp;view/close&nbsp;options&nbsp;menu");
 
         var imgContainer = document.createElement("div");
         imgContainer.className = "product-image-container";
@@ -63,7 +79,13 @@ window.onload = function() {
 
         var productName = document.createElement("div");
         productName.className = "product-name";
-        productName.innerHTML = products[currentProduct].brand + " " + products[currentProduct].model;
+        productName.innerHTML = products[currentProduct].brand + " " + products[currentProduct].model + " ";
+		
+		var favoriteIcon = document.createElement("i");
+		favoriteIcon.style.color = "red";
+		favoriteIcon.className = "fa ";
+		favoriteIcon.id = products[currentProduct].id + "Favorite";
+		productName.appendChild(favoriteIcon);
 
         var starAndPriceContainer = document.createElement("div");
         starAndPriceContainer.className = "product-rating-and-price-container";
@@ -86,46 +108,8 @@ window.onload = function() {
         var price = document.createElement("div");
         price.className = "product-price";
         price.innerHTML = "$"+products[currentProduct].price.toFixed(2);
-        
-        var circularMenu = document.createElement("div");
-        circularMenu.className = "circular-menu";
-        
-        
-        var circle = document.createElement("div");
-        circle.className = "circle";
-        circle.id = "product" + i + "Menu";
-        
-        var favorite = document.createElement("i");
-        favorite.className = "fa fa-heart-o fa-2x";
-        
-        var videos = document.createElement("i");
-        videos.className = "fa fa-film fa-2x";
-        
-        var reviews = document.createElement("i");
-        reviews.className = "fa fa-star fa-2x";
 
-        var specifications  = document.createElement("i");
-        specifications.className = "fa fa-list-ul fa-2x";
-        
-        var menuItems = [favorite, videos, reviews, specifications];
-        for (var j = 0, l = menuItems.length; j < l; j++)
-        {
-            menuItems[j].style.left = (50 - 35*Math.cos(-0.5 * Math.PI - 2*(1/l)*j*Math.PI)).toFixed(4) + "%";
-            menuItems[j].style.top = (50 + 35*Math.sin(-0.5 * Math.PI - 2*(1/l)*j*Math.PI)).toFixed(4) + "%";        
-            menuItems[j].onclick = (function() {
-                var currentProduct = products[i];
-				var iconId = 3-j;
-                return function() { 
-                    openModal(currentProduct, iconId);
-                }
-            })();
-        }
-        
-        circle.appendChild(favorite);
-        circle.appendChild(videos);
-        circle.appendChild(reviews);
-        circle.appendChild(specifications);
-        circularMenu.appendChild(circle);
+		var circularMenu = buildCircularMenu(currentProduct);
 
         imgContainer.appendChild(image);
         container.appendChild(imgContainer);
@@ -142,17 +126,76 @@ window.onload = function() {
                 openCircularMenu(currentId + "Menu");
             }
         })();
+		
         
-        productCards.push(productCard);
+		var productCardId = productCard.id;
+		productCards[productCardId] = productCard;
     }
     
-    for (var i = 0; i < productCards.length; i++) {
-        productsContainer.appendChild(productCards[i]);
-    }
-};
+    for (var i = 0; i < products.length; i++) {
+		var productCardId = products[i].id;
+        productsContainer.appendChild(productCards[productCardId]);
+    }	
+}
 
-function openCircularMenu(menuId)
-{
+function buildCircularMenu(i) {
+	var circularMenu = document.createElement("div");
+	circularMenu.className = "circular-menu";        
+	
+	var circle = document.createElement("div");
+	circle.className = "circle";
+	circle.id = "product" + i + "Menu";
+	
+	var favorite = document.createElement("i");
+	favorite.className = "fa fa-heart-o fa-2x";
+	addTooltip(favorite, "Compare&nbsp;to&nbsp;favorites");
+	
+	var videos = document.createElement("i");
+	videos.className = "fa fa-film fa-2x";
+	addTooltip(videos, "View&nbsp;videos");
+	
+	var reviews = document.createElement("i");
+	reviews.className = "fa fa-star fa-2x";
+	addTooltip(reviews, "Read&nbsp;reviews");
+
+	var specifications  = document.createElement("i");
+	specifications.className = "fa fa-list-ul fa-2x";
+	addTooltip(specifications, "View&nbsp;specifications");
+	
+	var menuItems = [favorite, videos, reviews, specifications];
+	for (var j = 0, l = menuItems.length; j < l; j++)
+	{
+		menuItems[j].style.left = (50 - 35*Math.cos(-0.5 * Math.PI - 2*(1/l)*j*Math.PI)).toFixed(4) + "%";
+		menuItems[j].style.top = (50 + 35*Math.sin(-0.5 * Math.PI - 2*(1/l)*j*Math.PI)).toFixed(4) + "%";        
+		menuItems[j].onclick = (function() {
+			var currentProduct = products[i];
+			var iconId = 3-j;
+			return function() { 
+				openModal(currentProduct, iconId);
+			}
+		})();
+	}
+	
+	circle.appendChild(favorite);
+	circle.appendChild(videos);
+	circle.appendChild(reviews);
+	circle.appendChild(specifications);
+	circularMenu.appendChild(circle);
+	
+	return circularMenu;
+}
+
+function addTooltip(element, tooltipText) {
+	var tooltipTextElement = document.createElement("span");
+	
+	element.className += " tooltip";
+	tooltipTextElement.className = "tooltip-text";
+	tooltipTextElement.innerHTML = tooltipText;
+	
+	element.appendChild(tooltipTextElement);
+}
+
+function openCircularMenu(menuId) {
 	if (currentMenuId == null)
 	{
 		currentMenuId = menuId;
@@ -186,8 +229,15 @@ function openCircularMenu(menuId)
     return false;
 }
 
-function openModal(currentProduct, menuItem)
-{
+function closeCircularMenu() {
+	if ((menuOpen) && (currentMenuId != null))
+	{
+        document.getElementById(currentMenuId).classList.toggle('open');
+		menuOpen = false;
+	}
+}
+
+function openModal(currentProduct, menuItem) {
     document.getElementById(currentMenuId).classList.toggle('open');
     currentMenuId = null;
     document.getElementById("modalWindow").style.display="block";
@@ -195,8 +245,7 @@ function openModal(currentProduct, menuItem)
 	document.getElementsByClassName("tablink")[menuItem].click();
 }
 
-function populateModal(currentProduct)
-{
+function populateModal(currentProduct) {
     document.getElementById("modalImage").src = currentProduct.imageUrl;
     document.getElementById("modalProductName").innerHTML = currentProduct.brand + " " + currentProduct.model;
     document.getElementById("modalPrice").innerHTML = "$"+currentProduct.price.toFixed(2);
@@ -210,8 +259,27 @@ function populateModal(currentProduct)
             star.className = "fa fa-star-o";
         }
     }
-    
-    var specsTable = document.getElementById("modalSecificationsTable");
+	var favoriteIcon = document.getElementById("modalFavorite");
+	favoriteIcon.className = "fa";
+	if (currentProduct.favorite) {
+		favoriteIcon.className += " fa-heart";
+	} else {
+		favoriteIcon.className += " fa-heart-o";
+	}
+	favoriteIcon.onclick = (function() {
+		return function() {
+			toggleFavorite(currentProduct)
+		}
+	})();
+        
+	populateModalSpecsTable(currentProduct);
+	populateModalReviews(currentProduct);
+	populateModalVideos(currentProduct);
+	populateModalCompareFavorites(currentProduct); 
+}
+
+function populateModalSpecsTable(currentProduct) {
+	var specsTable = document.getElementById("modalSecificationsTable");
     while (specsTable.firstChild) {
         specsTable.removeChild(specsTable.firstChild);
     }
@@ -227,7 +295,10 @@ function populateModal(currentProduct)
         row.appendChild(details);
         specsTable.appendChild(row);
     }
-    
+
+}
+
+function populateModalReviews(currentProduct) {
     var reviews = document.getElementById("reviewsContent");
     while (reviews.firstChild) {
         reviews.removeChild(reviews.firstChild);
@@ -261,7 +332,9 @@ function populateModal(currentProduct)
         
         reviews.appendChild(review);
     }
-    
+}
+
+function populateModalVideos(currentProduct) {
     var youtubeResultsScript = document.createElement("script");
     youtubeResultsScript.innerHTML = 
             "ytEmbed.init({'block':'ytThumbs','key':'AIzaSyAjRzrFIWUBkzGyca98NFNn3dfwLf6Bvh4','q':'" + currentProduct.brand + " " + 
@@ -269,27 +342,143 @@ function populateModal(currentProduct)
     document.getElementById("modalVideosContainer").appendChild(youtubeResultsScript);
 }
 
-function sortProducts(sortIndex) {
-    console.log("before sort");
-    for (var i = 0; i < products.length; i++) {
-        console.log(products[i]);
+function populateModalCompareFavorites(currentProduct) {
+	console.log("populateModalCompareFavorites");
+	var favoritesTable = document.getElementById("modalFavoritesTable");
+    while (favoritesTable.firstChild) {
+        favoritesTable.removeChild(favoritesTable.firstChild);
     }
+	var imageRow = document.createElement("tr");
+	imageRow.appendChild(document.createElement("td"));
+	console.log(imageRow);
+	var image = document.createElement("td");
+	image.innerHTML = "<img src=\"" + currentProduct.imageUrl + "\" height=\"50\"/>";
+	imageRow.appendChild(image);
+	for (var i = 0; i < favorites.length; i++)
+	{
+		if (favorites[i].id != currentProduct.id) {
+			image = document.createElement("td");
+			image.innerHTML = "<img src=\"" + favorites[i].imageUrl + "\" height=\"50\"/>";
+			imageRow.appendChild(image);		
+		}
+	}
+	favoritesTable.appendChild(imageRow);
+	
+	var priceRow = document.createElement("tr");
+	var price = document.createElement("td");
+	price.innerHTML = "Price";
+	priceRow.appendChild(price);
+	price = document.createElement("td");
+	price.innerHTML = "$" + currentProduct.price.toFixed(2);
+	priceRow.appendChild(price);
+	for (var i = 0; i < favorites.length; i++)
+	{
+		if (favorites[i].id != currentProduct.id) {
+			price = document.createElement("td");
+			price.innerHTML = "$" + favorites[i].price.toFixed(2);
+			priceRow.appendChild(price);		
+		}
+	}
+	favoritesTable.appendChild(priceRow);
+
+	var ratingRow = document.createElement("tr");
+	var rating = document.createElement("td");
+	rating.innerHTML = "Average Rating";
+	ratingRow.appendChild(rating);
+	rating = document.createElement("td");
+    for (j = 0; j < 5; j++) {
+		var star = document.createElement("i");
+		if (j + 0.5 < currentProduct.averageRating) {
+			star.className = "fa fa-star stars";
+		} else if (j + 0.5 == currentProduct.averageRating) {
+			star.className = "fa fa-star-half-o stars";
+		} else {
+			star.className = "fa fa-star-o stars";
+		}
+		rating.appendChild(star);
+	}
+	ratingRow.appendChild(rating);
+	
+	for (var i = 0; i < favorites.length; i++)
+	{
+		if (favorites[i].id != currentProduct.id) {
+			rating = document.createElement("td");
+			for (j = 0; j < 5; j++) {
+				var star = document.createElement("i");
+				if (j + 0.5 < favorites[i].averageRating) {
+					star.className = "fa fa-star stars";
+				} else if (j + 0.5 == favorites[i].averageRating) {
+					star.className = "fa fa-star-half-o stars";
+				} else {
+					star.className = "fa fa-star-o stars";
+				}
+				rating.appendChild(star);
+			}
+			ratingRow.appendChild(rating);
+		}
+	}
+	favoritesTable.appendChild(ratingRow);
+
+    for (var i in currentProduct.specifications) {
+        var row = document.createElement("tr");
+        var spec = document.createElement("td");
+        var details = document.createElement("td");
+        
+        spec.innerHTML = i;
+        details.innerHTML = currentProduct.specifications[i];
+        
+        row.appendChild(spec);
+        row.appendChild(details);
+		
+		for (var j = 0; j < favorites.length; j++) {
+			if (favorites[j].id != currentProduct.id) {
+				details = document.createElement("td");
+				details.innerHTML = favorites[j].specifications[i];
+				row.appendChild(details);
+			}
+		}
+        favoritesTable.appendChild(row);
+    }	
+}
+
+function toggleFavorite(product) {
+	var favoriteIcon = document.getElementById("modalFavorite");
+	var cardIcon = document.getElementById(product.id + "Favorite");
+	product.favorite = !product.favorite;
+	favoriteIcon.classList.toggle('fa-heart');
+	favoriteIcon.classList.toggle('fa-heart-o');
+	cardIcon.classList.toggle("fa-heart");
+	
+	if (product.favorite)
+	{
+		favorites.push(product);
+	}
+	else {
+		var index = favorites.indexOf(product);
+		favorites.splice(index,1);
+	}
+	
+}
+
+function sortProducts(sortIndex) {
     if (sortIndex == 1) {
-        console.log("price");
         products.sort(dynamicSort("price"));
     } else if (sortIndex == 2) {
-        console.log("-price");
         products.sort(dynamicSort("-price"));
     } else if (sortIndex == 3) {
-        console.log("averageRating");
         products.sort(dynamicSort("-averageRating"));        
     } else if (sortIndex == 4) {
-        console.log("brand");
         products.sort(dynamicSort("brand"));
     }
-    console.log("after sort");
+	
+	var productsContainer = document.getElementById("products-container");
+    while (productsContainer.firstChild) {
+        productsContainer.removeChild(productsContainer.firstChild);
+    }
+	
     for (var i = 0; i < products.length; i++) {
-         console.log(products[i]);       
+		var productCardId = products[i].id;
+        productsContainer.appendChild(productCards[productCardId]);
     }
 }
 
@@ -305,9 +494,9 @@ function dynamicSort(property) {
     }
 }
 
-function openCity(evt, cityName) {
+function openTab(evt, tabName) {
   var i, x, tablinks;
-  x = document.getElementsByClassName("city");
+  x = document.getElementsByClassName("tab-content");
   for (i = 0; i < x.length; i++) {
     x[i].style.display = "none";
   }
@@ -315,7 +504,7 @@ function openCity(evt, cityName) {
   for (i = 0; i < x.length; i++) {
     tablinks[i].classList.remove("w3-light-grey");
   }
-  document.getElementById(cityName).style.display = "block";
+  document.getElementById(tabName).style.display = "block";
   evt.currentTarget.classList.add("w3-light-grey");
 }
 
@@ -326,4 +515,67 @@ function toggleFilterCategory(filterCategoryId) {
     } else {
         filterCategory.style.display = "block";        
     }
+}
+
+function filterCards(category, index) {
+	console.log("filterCards"+category+index);
+	filters[category][index] = !filters[category][index];
+	for (var i = 0; i < products.length; i++) {
+		if (!matchesPriceFilters(products[i]) || 
+				!matchesReviewFilters(products[i]) || 
+				!matchesBrandFilters(products[i])) {
+			products[i].showOnPage = false;	
+		} else {
+			products[i].showOnPage = true;
+		}
+	}
+	for (var i = 0; i < products.length; i++) {
+		if (!products[i].showOnPage) {
+			document.getElementById(products[i].id).style.display = "none";		
+		} else {
+			document.getElementById(products[i].id).style.display = "block";		
+		}
+	}
+}
+
+function matchesPriceFilters(product) {
+	var filterMatch = false;
+	// if all price filters are disabled
+	if (! filters["price"][0] && !filters["price"][1] &&
+			!filters["price"][2] && !filters["price"][3]) {
+		filterMatch = true;
+	} else if (filters["price"][0] && (product.price < 25)) {
+		filterMatch = true;
+	} else if (filters["price"][1] && (product.price >= 25 && product.price < 50)) {
+		filterMatch = true;		
+	} else if (filters["price"][2] && (product.price >= 50 && product.price < 100)) {
+		filterMatch = true;		
+	} else if (filters["price"][3] && (product.price >= 100)) {
+		filterMatch = true;		
+	}
+	
+	return filterMatch;
+}
+
+function matchesReviewFilters(product) {
+	var filterMatch = false;
+	// if all rating filters are disabled
+	if (! filters["averageRating"][0] && !filters["averageRating"][1] &&
+			!filters["averageRating"][2] && !filters["averageRating"][3]) {
+		filterMatch = true;
+	} else if (filters["averageRating"][3] && (product.averageRating >= 4)) {
+		filterMatch = true;
+	} else if (filters["averageRating"][2] && (product.averageRating >= 3)) {
+		filterMatch = true;		
+	} else if (filters["averageRating"][1] && (product.averageRating >= 2)) {
+		filterMatch = true;		
+	} else if (filters["averageRating"][0] && (product.averageRating >= 1)) {
+		filterMatch = true;		
+	}
+	
+	return filterMatch;
+}
+
+function matchesBrandFilters(product) {
+	return true;
 }
