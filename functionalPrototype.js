@@ -46,7 +46,7 @@ function product(brand, model, price, imageUrl, averageRating, reviews, specific
     this.neweggUrl = neweggUrl;
 }
 
-window.onload = function() { 
+window.onload = function() {
 	buildProducts();
    	/* buildProductCards(); */
 };
@@ -59,8 +59,8 @@ function buildProducts() {
     }
 /* 	for (i = 0; i < 5; i++)
 	{
-		
-		products.push(new product("AXESS", "SPBT1031-RD", 119.99 - (25 * i), 
+
+		products.push(new product("AXESS", "SPBT1031-RD", 119.99 - (25 * i),
 			"https://images-na.ssl-images-amazon.com/images/I/41u8vEGE9QL.jpg",
 			1 + (0.5 * (i + 1)), productObj.reviews, false, productObj.specifications,
 			"product" + i, true));
@@ -70,7 +70,7 @@ function buildProducts() {
 function amazon(err, metadataAndMetametaData)
 {
 	var unwrappedMetadata = BSUtils.unwrap(metadataAndMetametaData.metadata);
-    
+
     var i = 0;
     for (i; i < products.length; i++)
     {
@@ -87,25 +87,25 @@ function amazon(err, metadataAndMetametaData)
         products[i].price = price;
         products[i].imageUrl = imageUrl;
         products[i].averageRating = averageRating;
-        
+
         // due to issues with some reviews containing embeded images and videos and some pages
         // not returning reviews, we have set up dummy reviews taken directly from the product page
         products[i].reviews.push(dummyReviews[products[i].amazonUrl]);
 
 /*         var reviews = unwrappedMetadata["reviews"];
-        
+
         for (j = 0; j < reviews.length; j++) {
             var rating = Number(reviews[j]["rating"].substring(0, 1));
             var title = reviews[j]["title"];
             var description = reviews[j]["description"];
-            
+
             products[i].reviews.push({"rating":rating, "title":title, "description":description});
         } */
 
     } catch (e) {
-        
+
     }
-    
+
     if (products[i].brand != "") {
         buildProductCard(products[i]);
     }
@@ -114,7 +114,7 @@ function amazon(err, metadataAndMetametaData)
 function newegg(err, metadataAndMetametaData) {
 	var unwrappedMetadata = BSUtils.unwrap(metadataAndMetametaData.metadata);
     console.log(unwrappedMetadata);
-    
+
     var i = 0;
     for (i; i < products.length; i++)
     {
@@ -124,7 +124,7 @@ function newegg(err, metadataAndMetametaData) {
     }
     try {
         var specsTable = unwrappedMetadata["specifications_table"];
-        
+
         for (j = 0; j < specsTable.length; j++)
         {
             var specifications = specsTable[j]["specifications"];
@@ -144,9 +144,9 @@ function newegg(err, metadataAndMetametaData) {
             }
         }
     } catch (e) {
-        
+
     }
-    
+
     if (products[i].price != 0) {
         buildProductCard(products[i]);
     }
@@ -155,25 +155,27 @@ function newegg(err, metadataAndMetametaData) {
 
 function buildProductCard(product) {
     var productsContainer = document.getElementById("products-container");
-    
+
     var productCard = document.createElement("div");
-    productCard.className = "product-card";        
+    productCard.className = "product-card";
     productCard.id = product.id;
 
     var container = document.createElement("div");
     container.className += "product-container";
-    addTooltip(container, "Right&nbsp;click&nbsp;to&nbsp;view/close&nbsp;options&nbsp;menu");
+    //addTooltip(container, "Right&nbsp;click&nbsp;to&nbsp;view/close&nbsp;options&nbsp;menu");
 
     var imgContainer = document.createElement("div");
     imgContainer.className = "product-image-container";
+		//addTooltip(imgContainer, "Right&nbsp;click&nbsp;to&nbsp;view/close&nbsp;options&nbsp;menu");
 
     var image = document.createElement("img");
     image.src = product.imageUrl;
+		addTooltip(image, "Right&nbsp;click&nbsp;to&nbsp;view/close&nbsp;options&nbsp;menu");
 
     var productName = document.createElement("div");
     productName.className = "product-name";
     productName.innerHTML = product.brand + " " + product.model + " ";
-    
+
     var favoriteIcon = document.createElement("i");
     favoriteIcon.style.color = "red";
     favoriteIcon.className = "fa ";
@@ -182,7 +184,7 @@ function buildProductCard(product) {
 
     var starAndPriceContainer = document.createElement("div");
     starAndPriceContainer.className = "product-rating-and-price-container";
-    
+
     var stars = document.createElement("div");
     stars.className = "product-rating";
 
@@ -212,39 +214,53 @@ function buildProductCard(product) {
     container.appendChild(starAndPriceContainer);
     productCard.appendChild(container);
     productCard.appendChild(circularMenu);
-    
-    productCard.oncontextmenu = (function() {
+
+    productCard.onmouseenter = (function() {
         var currentId = productCard.id;
         return function() {
             openCircularMenu(currentId + "Menu");
         }
     })();
-    
-    
+
+		productCard.onmouseleave = (function() {
+        var currentId = productCard.id;
+        return function() {
+					closeCircularMenu()
+				}
+		})();
+
+
     var productCardId = productCard.id;
     productCards[productCardId] = productCard;
-    
-    
+
+
     productsContainer.appendChild(productCard);
-    	
+
 }
 
 function buildCircularMenu(i) {
+	var currentProduct = products[i];
 	var circularMenu = document.createElement("div");
-	circularMenu.className = "circular-menu";        
-	
+	circularMenu.className = "circular-menu";
+
 	var circle = document.createElement("div");
 	circle.className = "circle";
 	circle.id = "product" + i + "Menu";
-	
-	var favorite = document.createElement("i");
-	favorite.className = "fa fa-heart-o fa-2x";
-	addTooltip(favorite, "Compare&nbsp;to&nbsp;favorites");
-	
+
+	var favoriteIcon = document.createElement("i");
+	favoriteIcon.className = "fa";
+	if (currentProduct.favorite) {
+		favoriteIcon.className += " fa-heart fa-2x";
+	} else {
+		favoriteIcon.className += " fa-heart-o fa-2x";
+	}
+	//favoriteIcon.className = "fa fa-heart-o fa-2x";
+	addTooltip(favoriteIcon, "Add&nbsp;to&nbsp;favorites");
+
 	var videos = document.createElement("i");
 	videos.className = "fa fa-film fa-2x";
 	addTooltip(videos, "View&nbsp;videos");
-	
+
 	var reviews = document.createElement("i");
 	reviews.className = "fa fa-star fa-2x";
 	addTooltip(reviews, "Read&nbsp;reviews");
@@ -252,37 +268,50 @@ function buildCircularMenu(i) {
 	var specifications  = document.createElement("i");
 	specifications.className = "fa fa-list-ul fa-2x";
 	addTooltip(specifications, "View&nbsp;specifications");
-	
-	var menuItems = [favorite, videos, reviews, specifications];
+
+	var compare  = document.createElement("i");
+	compare.className = "fa fa-exchange fa-2x";
+	addTooltip(compare, "View&nbsp; comparison");
+
+	var menuItems = [favoriteIcon, compare, videos, reviews, specifications];
 	for (var j = 0, l = menuItems.length; j < l; j++)
 	{
 		menuItems[j].style.left = (50 - 35*Math.cos(-0.5 * Math.PI - 2*(1/l)*j*Math.PI)).toFixed(4) + "%";
-		menuItems[j].style.top = (50 + 35*Math.sin(-0.5 * Math.PI - 2*(1/l)*j*Math.PI)).toFixed(4) + "%";        
+		menuItems[j].style.top = (50 + 35*Math.sin(-0.5 * Math.PI - 2*(1/l)*j*Math.PI)).toFixed(4) + "%";
 		menuItems[j].onclick = (function() {
-			var currentProduct = products[i];
-			var iconId = 3-j;
-			return function() { 
-				openModal(currentProduct, iconId);
+			//var currentProduct = products[i];
+			var iconId = 4-j;
+			return function() {
+				if (iconId==4) {
+								toggleFavorite(currentProduct)
+								//openModal(currentProduct, iconId);
+								console.log("Test"+iconId);
+							}
+				else {
+						openModal(currentProduct, iconId);
+						console.log("potato"+iconId);
+				}
 			}
 		})();
 	}
-	
-	circle.appendChild(favorite);
+
+	circle.appendChild(favoriteIcon);
 	circle.appendChild(videos);
 	circle.appendChild(reviews);
 	circle.appendChild(specifications);
+	circle.appendChild(compare);
 	circularMenu.appendChild(circle);
-	
+
 	return circularMenu;
 }
 
 function addTooltip(element, tooltipText) {
 	var tooltipTextElement = document.createElement("span");
-	
+
 	element.className += " tooltip";
 	tooltipTextElement.className = "tooltip-text";
 	tooltipTextElement.innerHTML = tooltipText;
-	
+
 	element.appendChild(tooltipTextElement);
 }
 
@@ -293,7 +322,7 @@ function openCircularMenu(menuId) {
         document.getElementById(currentMenuId).classList.toggle('open');
 		menuOpen = true;
 	}
-    else 
+    else
 	{
 		if (currentMenuId == menuId)
 		{
@@ -316,7 +345,7 @@ function openCircularMenu(menuId) {
 			}
 		}
 	}
-	
+
     return false;
 }
 
@@ -362,11 +391,11 @@ function populateModal(currentProduct) {
 			toggleFavorite(currentProduct)
 		}
 	})();
-        
+
 	populateModalSpecsTable(currentProduct);
 	populateModalReviews(currentProduct);
 	populateModalVideos(currentProduct);
-	populateModalCompareFavorites(currentProduct); 
+	populateModalCompareFavorites(currentProduct);
 }
 
 function populateModalSpecsTable(currentProduct) {
@@ -378,10 +407,10 @@ function populateModalSpecsTable(currentProduct) {
         var row = document.createElement("tr");
         var spec = document.createElement("td");
         var details = document.createElement("td");
-        
+
         spec.innerHTML = i;
         details.innerHTML = currentProduct.specifications[i];
-        
+
         row.appendChild(spec);
         row.appendChild(details);
         specsTable.appendChild(row);
@@ -401,7 +430,7 @@ function populateModalReviews(currentProduct) {
         {
             var review = document.createElement("div");
             review.className = "review";
-            
+
             var stars = document.createElement("div");
             stars.className = "stars";
             for (j = 0; j < 5; j++)
@@ -415,15 +444,15 @@ function populateModalReviews(currentProduct) {
                 stars.appendChild(star);
             }
             review.appendChild(stars);
-            
+
             var title = document.createElement("div");
             title.innerHTML = "<b>" + currentProduct.reviews[i]["title"] + "</b>";
             review.appendChild(title);
-            
+
             var description = document.createElement("div");
             description.appendChild(document.createTextNode(currentProduct.reviews[i]["description"]));
             review.appendChild(description);
-            
+
             reviews.appendChild(review);
         }
     }
@@ -431,8 +460,8 @@ function populateModalReviews(currentProduct) {
 
 function populateModalVideos(currentProduct) {
     var youtubeResultsScript = document.createElement("script");
-    youtubeResultsScript.innerHTML = 
-            "ytEmbed.init({'block':'ytThumbs','key':'AIzaSyAjRzrFIWUBkzGyca98NFNn3dfwLf6Bvh4','q':'" + currentProduct.brand + " " + 
+    youtubeResultsScript.innerHTML =
+            "ytEmbed.init({'block':'ytThumbs','key':'AIzaSyAjRzrFIWUBkzGyca98NFNn3dfwLf6Bvh4','q':'" + currentProduct.brand + " " +
             currentProduct.model + "','type':'search','results':5,'meta':true,'player':'embed','layout':'full'});";
     document.getElementById("modalVideosContainer").appendChild(youtubeResultsScript);
 }
@@ -452,11 +481,11 @@ function populateModalCompareFavorites(currentProduct) {
 		if (favorites[i].id != currentProduct.id) {
 			image = document.createElement("td");
 			image.innerHTML = "<img src=\"" + favorites[i].imageUrl + "\" height=\"50\"/>";
-			imageRow.appendChild(image);		
+			imageRow.appendChild(image);
 		}
 	}
 	favoritesTable.appendChild(imageRow);
-	
+
 	var productRow = document.createElement("tr");
 	var product = document.createElement("td");
 	product.innerHTML = "Product";
@@ -469,11 +498,11 @@ function populateModalCompareFavorites(currentProduct) {
 		if (favorites[i].id != currentProduct.id) {
 			product = document.createElement("td");
 			product.innerHTML = favorites[i].brand + " " + favorites[i].model;
-			productRow.appendChild(product);		
+			productRow.appendChild(product);
 		}
 	}
 	favoritesTable.appendChild(productRow);
-    
+
 	var priceRow = document.createElement("tr");
 	var price = document.createElement("td");
 	price.innerHTML = "Price";
@@ -486,7 +515,7 @@ function populateModalCompareFavorites(currentProduct) {
 		if (favorites[i].id != currentProduct.id) {
 			price = document.createElement("td");
 			price.innerHTML = "$" + favorites[i].price.toFixed(2);
-			priceRow.appendChild(price);		
+			priceRow.appendChild(price);
 		}
 	}
 	favoritesTable.appendChild(priceRow);
@@ -508,7 +537,7 @@ function populateModalCompareFavorites(currentProduct) {
 		rating.appendChild(star);
 	}
 	ratingRow.appendChild(rating);
-	
+
 	for (var i = 0; i < favorites.length; i++)
 	{
 		if (favorites[i].id != currentProduct.id) {
@@ -533,13 +562,13 @@ function populateModalCompareFavorites(currentProduct) {
         var row = document.createElement("tr");
         var spec = document.createElement("td");
         var details = document.createElement("td");
-        
+
         spec.innerHTML = i;
         details.innerHTML = currentProduct.specifications[i];
-        
+
         row.appendChild(spec);
         row.appendChild(details);
-		
+
 		for (var j = 0; j < favorites.length; j++) {
 			if (favorites[j].id != currentProduct.id) {
 				details = document.createElement("td");
@@ -553,7 +582,7 @@ function populateModalCompareFavorites(currentProduct) {
 			}
 		}
         favoritesTable.appendChild(row);
-    }	
+    }
 }
 
 function toggleFavorite(product) {
@@ -563,7 +592,7 @@ function toggleFavorite(product) {
 	favoriteIcon.classList.toggle('fa-heart');
 	favoriteIcon.classList.toggle('fa-heart-o');
 	cardIcon.classList.toggle("fa-heart");
-	
+
 	if (product.favorite)
 	{
 		favorites.push(product);
@@ -572,7 +601,7 @@ function toggleFavorite(product) {
 		var index = favorites.indexOf(product);
 		favorites.splice(index,1);
 	}
-	
+
 }
 
 function sortProducts(sortIndex) {
@@ -581,16 +610,16 @@ function sortProducts(sortIndex) {
     } else if (sortIndex == 2) {
         products.sort(dynamicSort("-price"));
     } else if (sortIndex == 3) {
-        products.sort(dynamicSort("-averageRating"));        
+        products.sort(dynamicSort("-averageRating"));
     } else if (sortIndex == 4) {
         products.sort(dynamicSort("brand"));
     }
-	
+
 	var productsContainer = document.getElementById("products-container");
     while (productsContainer.firstChild) {
         productsContainer.removeChild(productsContainer.firstChild);
     }
-	
+
     for (var i = 0; i < products.length; i++) {
 		var productCardId = products[i].id;
         productsContainer.appendChild(productCards[productCardId]);
@@ -628,7 +657,7 @@ function toggleFilterCategory(filterCategoryId) {
     if (filterCategory.style.display == "block") {
         filterCategory.style.display = "none";
     } else {
-        filterCategory.style.display = "block";        
+        filterCategory.style.display = "block";
     }
 }
 
@@ -636,18 +665,18 @@ function filterCards(category, index) {
 	console.log("filterCards"+category+index);
 	filters[category][index] = !filters[category][index];
 	for (var i = 0; i < products.length; i++) {
-		if (!matchesPriceFilters(products[i]) || 
+		if (!matchesPriceFilters(products[i]) ||
 				!matchesReviewFilters(products[i])) {
-			products[i].showOnPage = false;	
+			products[i].showOnPage = false;
 		} else {
 			products[i].showOnPage = true;
 		}
 	}
 	for (var i = 0; i < products.length; i++) {
 		if (!products[i].showOnPage) {
-			document.getElementById(products[i].id).style.display = "none";		
+			document.getElementById(products[i].id).style.display = "none";
 		} else {
-			document.getElementById(products[i].id).style.display = "block";		
+			document.getElementById(products[i].id).style.display = "block";
 		}
 	}
 }
@@ -661,13 +690,13 @@ function matchesPriceFilters(product) {
 	} else if (filters["price"][0] && (product.price < 25)) {
 		filterMatch = true;
 	} else if (filters["price"][1] && (product.price >= 25 && product.price < 50)) {
-		filterMatch = true;		
+		filterMatch = true;
 	} else if (filters["price"][2] && (product.price >= 50 && product.price < 100)) {
-		filterMatch = true;		
+		filterMatch = true;
 	} else if (filters["price"][3] && (product.price >= 100)) {
-		filterMatch = true;		
+		filterMatch = true;
 	}
-	
+
 	return filterMatch;
 }
 
@@ -680,12 +709,12 @@ function matchesReviewFilters(product) {
 	} else if (filters["averageRating"][3] && (product.averageRating >= 4)) {
 		filterMatch = true;
 	} else if (filters["averageRating"][2] && (product.averageRating >= 3)) {
-		filterMatch = true;		
+		filterMatch = true;
 	} else if (filters["averageRating"][1] && (product.averageRating >= 2)) {
-		filterMatch = true;		
+		filterMatch = true;
 	} else if (filters["averageRating"][0] && (product.averageRating >= 1)) {
-		filterMatch = true;		
+		filterMatch = true;
 	}
-	
+
 	return filterMatch;
 }
